@@ -1,0 +1,27 @@
+# Data (regenerable from 01_fetch_statsbomb_events.ipynb / 02_build_analysis_frame.ipynb)
+data/
+
+# Local documents (slides, DAG source/render, generated figures) — not part of
+# the public reproduction artefact.
+documents/
+
+# Historical backups and one-off cleanups
+backup/
+
+# Build outputs (regenerable from build_dml_figure.py / notebook 05)
+fig_*.png
+fig_*.pdf
+
+# Local notebook artefacts
+.ipynb_checkpoints/
+__pycache__/
+
+# OS / editor
+.DS_Store
+.claude/
+~$*
+.$*.bkp
+
+# Logs and ad-hoc scratch
+*.log
+/tmp/
