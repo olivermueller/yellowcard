@@ -17,6 +17,8 @@
 ## C. Survival bias / outcome window
 - [ ] **(P1)** Replace the "played first 60'" restriction with a **multi-window analysis**: 30–45, 45–50, 45–60, 45–70, 45–80.
 - [x] **(P1)** **Booking/substitution descriptives + censoring table** (done 2026-07-21): `src/build_desc_minutes.py` (minute histograms overall + per position; 7,872 yellows 4.32/match rising through the game, Defenders most-booked/least-subbed; 10,473 subs 5.74/match, 7.2% at HT, median 71') and `src/build_censoring_table.py` (`data/censoring_by_window.csv`). **Key: booked players withdrawn at HT 3.5% vs 1.78% for comparable controls (~2x, robust to position x starter-share adjustment). Lee trims: 45-50 2.4%, 45-60 5.5%, 45-70 8.9%, 45-80 11.4%** — quantifies the window bias-signal trade-off; plan = effects per window + Lee bounds.
+- [ ] **(P1)** **DECIDED 2026-07-21:** report the coach-response finding — *a first-half booking nearly doubles the probability of being withdrawn at half-time* (3.5% vs 1.78%) — as a result in its own right (extensive margin: coach substitutes; intensive margin: surviving players adapt).
+- [ ] **(P1)** **DECIDED 2026-07-21:** use the **Lee (2009) bounding procedure** for the treatment effects (trim control-survivor outcome distribution by the per-window trimming fraction, both directions; prefer the covariate-conditional version within cells). Estimand stated as effect among always-on-pitch players.
 - [ ] **(P2)** Report effect estimates across all windows; discuss sensitivity of conclusions to the window choice.
 - [ ] **(P3)** (Considered, deprioritised) per-minute normalisation — superseded by multi-window; revisit only if windows prove insufficient.
 
