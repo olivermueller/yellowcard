@@ -29,7 +29,7 @@
 
 ## E. Covariates
 - [x] **(P1)** **Betting odds sourced & joined**: football-data.co.uk 2015/16 big-5; 1,823/1,823 matches matched (1 patched with Pinnacle). `data/odds/odds_big5_1516.csv` incl. de-vigged `odds_p_home`/`odds_p_draw`.
-- [x] **(P2)** **Player age/experience covariate** (done 2026-07-21): `data/player_covariates_big5.parquet` — **age** from Wikidata DOB (label/alias/search + footballer + birth-year plausibility + club-membership validation, QID kept; 99.89% row coverage, 6 fringe players NA) and **starter_share** = cumulative starts ÷ team matchday from StatsBomb lineups (100%; treated 0.66 vs control 0.58). `data/lineups_big5.parquet` fetched for all 1,823 matches (also feeds C's substitution descriptives). TODO: wire both into W (and age into Z?) in the DML.
+- [x] **(P2)** **Player age/experience covariate** (done 2026-07-21): `data/player_covariates_big5.parquet` — **age** from Wikidata DOB (label/alias/search + footballer + birth-year plausibility + club-membership validation, QID kept; 99.89% row coverage, 6 fringe players NA) and **starter_share** = cumulative starts ÷ team matchday from StatsBomb lineups (100%; treated 0.66 vs control 0.58). `data/lineups_big5.parquet` fetched for all 1,823 matches (also feeds C's substitution descriptives). Coverage: odds 100%, starter_share 100%, age 99.89% (44 rows / 6 Ligue-1 fringe players NA; treated 99.79% vs control 99.90% — complete-case drop defensible). TODO: wire both into W (and age into Z?) in the DML.
 - [ ] **(P3)** Elo, player market values — **not pursued** for now (explicitly out of scope).
 
 ## F. Publication strategy (two papers)
