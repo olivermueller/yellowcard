@@ -45,6 +45,7 @@
 - [ ] **(P3)** **Paper 2 (methods-forward, Call for Causal ML)** → Journal of Sports Analytics; *different* treatment (X) and outcome (Y). Park as a separate future track — not part of Paper 1's critical path.
 
 ## G. Manuscript production (JQAS)
+- [ ] **(P1)** **Adapt — if needed — and rerun all assumption-check scripts** (added 2026-07-22): `05_assumption_checks.ipynb` (positivity/propensity trimming, SUTVA teammate-spillover test, Cinelli-Hazlett sensitivity) was built on the pre-fix frame; verify it runs on the corrected frame and canonical (male, +age) spec, adapt where the frame/W changed, and re-derive all robustness numbers cited in the paper (e.g. e(W) range, spillover ATE, CH robustness value).
 - [ ] **(P2)** Expand full DML exposition (orthogonality, cross-fitting, match-clustered inference).
 - [ ] **(P2)** Heterogeneity θ(Z) with validation battery (BLP / GATES / calibration).
 - [ ] **(P2)** Robustness: placebo/pre-window checks, treatment-definition sensitivity ([15′,45′]).
