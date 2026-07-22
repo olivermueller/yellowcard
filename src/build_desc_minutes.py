@@ -1,6 +1,6 @@
 """Booking/substitution descriptives over the 90 minutes (backlog item C).
 
-Big-5 2015/16 sample. Computes headline stats (cards & subs per match, half
+Canonical male sample (all male matches in the corrected frame). Computes headline stats (cards & subs per match, half
 splits, half-time subs, censoring of booked players) and renders minute
 histograms — overall and per position group.
 
@@ -35,8 +35,9 @@ def style(ax):
 
 
 def main():
-    af = pd.read_csv("data/analysis_frame_big5.csv",
-                     usecols=["match_id", "position", "position_group"], low_memory=False)
+    af = pd.read_csv("data/analysis_frame.csv",
+                     usecols=["match_id", "gender", "position", "position_group"], low_memory=False)
+    af = af[af.gender == "male"]
     mids = af.match_id.unique().tolist()
     posmap = af.drop_duplicates("position").set_index("position").position_group.to_dict()
     posmap["Goalkeeper"] = "Goalkeeper"

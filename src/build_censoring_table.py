@@ -1,11 +1,12 @@
 """Censoring-by-window table for the survival-selection analysis (backlog item C).
 
-Population: starters still on the pitch at the end of H1 (no sub-off or
+Population (canonical male sample): starters still on the pitch at the end of H1 (no sub-off or
 sending-off during period 1). Treated = first yellow in [15', 45'] of H1;
 control = starters with no H1 booking. For each candidate outcome window
 45'-c we report the share censored by c (substituted — incl. half-time subs,
 recorded by StatsBomb at period 2 minute 45 — or sent off), the control rate
-standardized to the treated position x starter-share-tercile mix, and the
+standardized to the treated position x pre-activity-tercile mix (the canonical
+bounds cell scheme), and the
 implied Lee (2009) trimming fraction p = (q_c - q_t) / q_c with q = share
 still observed.
 
@@ -22,8 +23,9 @@ WINDOWS = [50, 60, 70, 80]
 
 
 def main():
-    af = pd.read_csv("data/analysis_frame_big5.csv",
-                     usecols=["match_id", "position", "position_group"], low_memory=False)
+    af = pd.read_csv("data/analysis_frame.csv",
+                     usecols=["match_id", "gender", "position", "position_group"], low_memory=False)
+    af = af[af.gender == "male"]
     mids = af.match_id.unique().tolist()
     posmap = af.drop_duplicates("position").set_index("position").position_group.to_dict()
     posmap["Goalkeeper"] = "Goalkeeper"
@@ -47,7 +49,7 @@ def main():
     booked_keys = set(zip(*ev[card.eq("Yellow Card") & (ev.period == 1)]
                           [["match_id", "player_id"]].drop_duplicates().values.T))
 
-    lu = pd.read_parquet("data/lineups_big5.parquet")
+    lu = pd.read_parquet("data/lineups_male.parquet")
     E = lu[lu.started][["match_id", "player_id"]]
     E = E[[k not in h1_exit for k in zip(E.match_id, E.player_id)]].copy()
     E = E.merge(exit2, on=["match_id", "player_id"], how="left")
@@ -57,11 +59,14 @@ def main():
     C = E[~E.key.isin(booked_keys)].copy()
     print(f"population: starters on pitch at end of H1 | treated {len(T):,} | control {len(C):,}")
 
-    ss = pd.read_parquet("data/starter_share_big5.parquet")[["match_id", "player_id", "starter_share"]]
+    pre = (ev[(ev.period == 1) & (ev.minute < 15)].groupby(["match_id", "player_id"])
+             .size().rename("pre_n"))
     for D in (T, C):
-        D2 = D.merge(pos, on=["match_id", "player_id"], how="left").merge(ss, on=["match_id", "player_id"], how="left")
-        D["cell"] = (D2.grp.values + "|" +
-                     pd.cut(D2.starter_share, [-.01, .33, .66, 1.01], labels=["low", "mid", "high"]).astype(str))
+        D2 = (D.merge(pos, on=["match_id", "player_id"], how="left")
+                .merge(pre, on=["match_id", "player_id"], how="left"))
+        D2["pre_n"] = D2.pre_n.fillna(0)
+        act = pd.qcut(D2.pre_n.rank(method="first"), 3, labels=["low", "mid", "high"]).astype(str)
+        D["cell"] = D2.grp.values + "|" + act.values
 
     print(f"HT withdrawal: treated {100*(T.exit2==45).mean():.1f}% vs control {100*(C.exit2==45).mean():.2f}%")
 
