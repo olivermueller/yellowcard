@@ -114,14 +114,15 @@ def main():
                 keep = np.setdiff1d(np.arange(len(d)), np.array(drop, dtype=int))
                 d2 = d.iloc[keep].reset_index(drop=True)
                 Tr2, Yr2 = crossfit_one(d2, build_W(d2), dv)
-                bnd, _, _ = ate(Tr2, Yr2, d2.match_id.values)
-                bounds[side] = bnd
+                bnd, se_b, _ = ate(Tr2, Yr2, d2.match_id.values)
+                bounds[side] = (bnd, se_b)
             rows.append(dict(window=f"45-{b}", dv=lab, n=len(d), treated=int(t.sum()),
                              control_mean=round(cm, 3), ate=round(est, 4), se=round(se, 4),
                              p=round(p, 4), rel=f"{100*est/cm:+.1f}%",
-                             lee_lo=round(bounds["lower"], 4), lee_hi=round(bounds["upper"], 4),
-                             lee_lo_rel=f"{100*bounds['lower']/cm:+.1f}%",
-                             lee_hi_rel=f"{100*bounds['upper']/cm:+.1f}%"))
+                             lee_lo=round(bounds["lower"][0], 4), lee_hi=round(bounds["upper"][0], 4),
+                             lee_lo_se=round(bounds["lower"][1], 4), lee_hi_se=round(bounds["upper"][1], 4),
+                             lee_lo_rel=f"{100*bounds['lower'][0]/cm:+.1f}%",
+                             lee_hi_rel=f"{100*bounds['upper'][0]/cm:+.1f}%"))
             print(pd.DataFrame(rows).tail(1).to_string(index=False, header=False), flush=True)
 
     out = pd.DataFrame(rows)

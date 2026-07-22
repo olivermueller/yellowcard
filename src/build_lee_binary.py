@@ -119,14 +119,16 @@ def main():
                 keep = np.setdiff1d(np.arange(len(d)), np.array(drop, dtype=int))
                 d2 = d.iloc[keep].reset_index(drop=True)
                 Tr2, Yr2 = crossfit_bin(d2, build_W(d2), [blab])
-                bnd, _, _ = ate(Tr2, Yr2[blab], d2.match_id.values)
-                bounds[side] = bnd
+                bnd, se_b, _ = ate(Tr2, Yr2[blab], d2.match_id.values)
+                bounds[side] = (bnd, se_b)
             rows.append(dict(window=f"45-{b}", dv=blab, control_p=round(cm, 4),
                              ate_pp=round(100*est, 2), se_pp=round(100*se, 2), p=round(p, 4),
                              rel=f"{100*est/cm:+.1f}%",
-                             lee_lo_pp=round(100*bounds["lower"], 2),
-                             lee_hi_pp=round(100*bounds["upper"], 2),
-                             zero_excluded=bool(bounds["upper"] < 0 or bounds["lower"] > 0)))
+                             lee_lo_pp=round(100*bounds["lower"][0], 2),
+                             lee_hi_pp=round(100*bounds["upper"][0], 2),
+                             lee_lo_se_pp=round(100*bounds["lower"][1], 2),
+                             lee_hi_se_pp=round(100*bounds["upper"][1], 2),
+                             zero_excluded=bool(bounds["upper"][0] < 0 or bounds["lower"][0] > 0)))
             print(pd.DataFrame(rows).tail(1).to_string(index=False, header=False), flush=True)
 
     out = pd.DataFrame(rows)

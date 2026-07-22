@@ -71,6 +71,14 @@ def bookings(ev):
               .rename("book_min"))
 
 
+def p2_cards(ev):
+    """(match_id, player_id) -> minute of first yellow/red in period 2 (clipped)."""
+    card = ev[CARD[0]].where(ev[CARD[0]].notna(), ev[CARD[1]])
+    y = ev[card.isin(["Yellow Card", "Second Yellow", "Red Card"]) & (ev.period == 2)]
+    return (y.assign(m=lambda d: d.minute.clip(upper=90))
+              .groupby(["match_id", "player_id"]).m.min().rename("p2_card_min"))
+
+
 def window_counts(ev, period, lo, hi):
     """Counts per (match,player) of the 3 component DVs in [lo, hi] (hi None = open)."""
     m = (ev.period == period) & (ev.minute >= lo) & ev.tn.isin(set(OUT_TYPES.values()))
@@ -120,7 +128,8 @@ def build_extras(cand, frame, ev, book):
     return X
 
 
-def assemble(frame, extras, counts, treat_lo, treat_hi, book, drop_booked_outside=None):
+def assemble(frame, extras, counts, treat_lo, treat_hi, book, drop_booked_outside=None,
+             p2c=None, post_end=None):
     keep_f = frame.copy()
     bmf = keep_f.merge(book, on=["match_id", "player_id"], how="left").book_min
     keep_f["book_min"] = bmf.values
@@ -132,6 +141,9 @@ def assemble(frame, extras, counts, treat_lo, treat_hi, book, drop_booked_outsid
     if drop_booked_outside is not None:
         lo, hi = drop_booked_outside
         d = d[~(d.book_min.between(lo, hi) & (d.treat_yellow_card == 0))]
+    if p2c is not None and post_end is not None:
+        d = d.merge(p2c, on=["match_id", "player_id"], how="left")
+        d = d[~(d.p2_card_min <= post_end)]          # no yellow/red in the post window
     d = d.merge(counts, on=["match_id", "player_id"], how="left")
     for t in OUT_TYPES.values():
         d[t] = d[t].fillna(0) if t in d.columns else 0.0
