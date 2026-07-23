@@ -1,4 +1,4 @@
-"""Multi-window DML (backlog C): outcomes for 45-50, 45-60, 45-70, 45-80.
+"""Multi-window DML (backlog C): outcomes for 45-50/60/70/80/90.
 
 Windows and samples (male, outfield starters, complete-case on age):
   45-b  : treatment = first yellow [15,45]; outcome = counts in period 2,
@@ -181,12 +181,12 @@ def main():
 
     results = []
     # ---- second-half windows ----
-    for b in [50, 60, 70, 80]:
+    for b in [50, 60, 70, 80, 90]:
         elig = starters[starters.exit2 > b]
         f = frame.merge(elig[["match_id", "player_id"]], on=["match_id", "player_id"])
         cand = elig[~elig.in_frame][["match_id", "team_id", "player_id"]]
         extras = build_extras(cand, frame, ev, book)
-        counts = window_counts(ev, 2, 45, b)
+        counts = window_counts(ev, 2, 45, None if b == 90 else b)   # 90 = full second half incl. stoppage
         d = assemble(f, extras, counts, 15, 45, book)
         print(f"[45-{b}] n={len(d):,} (frame {len(f):,} + extras {len(d)-len(f):,} after age-drop) "
               f"treated={int(d.treat_yellow_card.sum()):,}", flush=True)

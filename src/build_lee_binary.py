@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_male_dml import HGB, build_W, ate
 import build_multiwindow as mw
 
-WINDOWS = [50, 60, 70, 80]
+WINDOWS = [50, 60, 70, 80, 90]
 N_ACT = 3
 BDVS = {"any_def_action": "post_n_def_events", "any_pressure": "post_n_pressure",
         "any_tackle": "post_n_tackle", "any_foul": "post_n_foul_committed"}
@@ -81,7 +81,7 @@ def main():
         f = frame.merge(elig[["match_id", "player_id"]], on=["match_id", "player_id"])
         cand = elig[~elig.in_frame][["match_id", "team_id", "player_id"]]
         extras = mw.build_extras(cand, frame, ev, book)
-        counts = mw.window_counts(ev, 2, 45, b)
+        counts = mw.window_counts(ev, 2, 45, None if b == 90 else b)
         d = mw.assemble(f, extras, counts, 15, 45, book)
         for blab, src in BDVS.items():
             d[blab] = (d[src] > 0).astype(float)
