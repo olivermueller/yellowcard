@@ -1,0 +1,5 @@
+dv,control_mean,ate,se,p,rel
+post_n_def_events,3.363,-0.1703,0.0496,0.0006,-5.1%
+post_n_pressure,2.779,-0.111,0.0429,0.0096,-4.0%
+post_n_tackle,0.334,-0.0023,0.0117,0.843,-0.7%
+post_n_foul_committed,0.251,-0.0566,0.009,0.0,-22.6%
