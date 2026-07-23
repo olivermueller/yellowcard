@@ -36,15 +36,30 @@ framing ("we invite the community to adopt causal ML") moves to a short discussi
    three-margin answer: coaches withdraw booked players ~2.4× more often, surviving players cut
    fouls ~25% (tackling untouched), teammates partially compensate (+5%). One paragraph on why
    observational causal inference is required.
-2. **Related work (≈2.5 pp).** Suspension/accumulation deterrence (VanDerwerken et al.),
-   red-card literature (Ridder et al. …), causal ML in sports (the two existing applications).
-   Position: within-match behavioural response to a single booking = the gap.
+2. **Related work (≈3 pp).** Three strands, all *between-match or team-level* — none
+   estimates the in-game, player-level effect of a booking:
+   - **Cards and team outcomes:** Ridder, Cramer & Hopstaken (1994, JASA) and the red-card
+     literature (Cerveny, van Ours & van Tuijl 2018, Empirical Economics; Bar-Eli et al.;
+     Lago-Penas et al. 2016) on dismissals and team performance; Anders & Rotthoff (2011,
+     JQAS — home turf) on yellow/red cards and win probability; "Influence of red and yellow
+     cards on team performance in elite soccer" (Annals of OR, 2023).
+   - **Suspension deterrence ACROSS matches:** VanDerwerken, Rothert & Nguelifack (2018,
+     J. Sports Economics — 12-23% foul reduction when one card from suspension); strategic
+     "suspension by choice" (fifth-yellow timing); fouling-incentive studies (Deutscher et
+     al. 2013; "Foul Play", 2025).
+   - **Cards as referee decisions:** referee bias/consistency literature (Buraimo, Forrest &
+     Simmons; "Yellow fever", JRSS-A 2025; Unkelbach & Memmert) — cards as outcomes, not
+     treatments.
+   **Gap statement:** existing causal work studies *between-match* deterrence (suspension
+   threat) or *team-level* consequences; we estimate the **within-match, player-level causal
+   effect of a booking on the booked player's own subsequent behaviour** — the margin the
+   half-time substitution decision actually turns on. (Verify/complete citations while
+   writing; candidates flagged above.)
 3. **Data and design (≈5 pp).**
    - StatsBomb open data; **canonical sample**: male, outfield **lineup-verified starters**, no
      H1 exit, on pitch through the outcome window; ~52k player-matches, ~3.0k treated.
    - **Attrition/eligibility table** (backlog B-P2): from raw player-matches to the analysis
-     sample, step by step — incl. an honest note that an earlier construction mis-identified
-     starters ("Player On") and conditioned on post-window cards; both corrected here.
+     sample, step by step (lineup-verified starters, no H1 exit, on pitch through the window).
    - Windows: pre [0,15) → treatment [15,45] → outcomes 45–b for b ∈ {50,60,70,80};
      Table 1 (variable families) updated with age (Wikidata DOB, 98.6% coverage).
    - Descriptives: booking/substitution timing histograms; **censoring table** (withdrawal
@@ -56,9 +71,9 @@ framing ("we invite the community to adopt causal ML") moves to a short discussi
    Imbens–Manski CIs. Cite Lee (2009), Semenova (better Lee bounds), Imbens–Manski (2004),
    Hudgens–Halloran (partial interference).
 5. **Results (≈7 pp).**
-   - **Main effects (Table 2, corrected):** naive ≈ 0 / OLS+W ≈ DML: fouls −25.6%***,
-     def. engagement −5.7%***, pressures −4.3%**, tackles null. Honest note: estimators agree
-     once the sample is constructed correctly.
+   - **Main effects:** descriptive treated-vs-control differences (raw means per DV), then
+     the DML estimates: fouls −25.6%***, def. engagement −5.7%***, pressures −4.3%**,
+     tackles null. (No naive-OLS / OLS+W estimator ladder — DML is the single estimator.)
    - **Coach response:** booking ×2.4 HT withdrawal — the extensive margin (own result).
    - **Multi-window (durability):** fouls −23…−27% stable 45′→80′; immediate onset at 45–50′;
      30–45′ contamination check motivates the H2 design.
@@ -78,8 +93,8 @@ framing ("we invite the community to adopt causal ML") moves to a short discussi
 
 **Figures (separate files, regenerate at ≥300 dpi):** F1 DAG · F2 timing histograms ·
 F3 multi-window effect profile with bounds (new — the money figure) · F4 subgroup ATEs ·
-F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 main
-effects (3 estimators) · T4 multi-window + Lee/IM bounds · T5 spillover.
+F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 descriptives +
+main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
 ## Work plan
 
@@ -92,6 +107,5 @@ effects (3 estimators) · T4 multi-window + Lee/IM bounds · T5 spillover.
 6. [ ] Convert references to Chicago author-date; add Lee/Semenova/Imbens–Manski/Hudgens–Halloran.
 7. [ ] Internal pass vs the 20–30-page budget; co-author round; ScholarOne submission.
 
-**Open questions for co-authors:** (a) title; (b) whether the frame-correction note is a
-footnote or a short "differences from the workshop version" appendix; (c) keep 45–60′ or
+**Open questions for co-authors:** (a) title; (b) keep 45–60′ or
 45–50′ as the headline window in the abstract (recommend 45–60′ with 45–50′ as onset evidence).
