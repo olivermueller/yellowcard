@@ -85,23 +85,29 @@ def main():
     fig.savefig("fig_desc_minutes_overall.png", dpi=300, facecolor="white")
 
     grps = ["Goalkeeper", "Defender", "Midfielder", "Forward"]
+    # common y-limits per column (over the position rows)
+    ymax_yel = max(np.histogram(yel[yel.grp == g].m, bins=bins)[0].max() for g in grps)
+    ymax_sub = max(max(np.histogram(sub[(sub.grp == g) & ~sub.interval].m, bins=bins)[0].max(),
+                       sub[(sub.grp == g)].interval.sum()) for g in grps)
     fig, axes = plt.subplots(4, 2, figsize=(10, 9), sharex=True)
     for i, g in enumerate(grps):
         ax = axes[i, 0]
         ax.hist(yel[yel.grp == g].m, bins=bins, color=YEL, edgecolor="white", lw=.8, zorder=2)
-        style(ax)
+        style(ax); ax.set_ylim(0, 1.06 * ymax_yel)
         if i == 0: ax.set_title("Yellow cards", fontsize=11, color=INK, loc="left", fontweight="bold")
         ax.set_ylabel(g, fontsize=10, color=INK)
         if i == 3: ax.set_xlabel("minute")
         ax = axes[i, 1]
         gg = sub[sub.grp == g]
-        ax.hist(gg[~gg.interval].m, bins=bins, color=BLU, edgecolor="white", lw=.8, zorder=2)
-        ax.bar(45, gg.interval.sum(), width=2.2, color="#9fc2ea", edgecolor=BLU,
-               hatch="///", lw=.8, zorder=3)
-        style(ax)
+        _, _, hp = ax.hist(gg[~gg.interval].m, bins=bins, color=BLU, edgecolor="white",
+                           lw=.8, zorder=2, label="during play")
+        hb = ax.bar(45, gg.interval.sum(), width=2.2, color="#9fc2ea", edgecolor=BLU,
+                    hatch="///", lw=.8, zorder=3, label="half-time interval")
+        style(ax); ax.set_ylim(0, 1.06 * ymax_sub)
         if i == 0:
             ax.set_title("Substitutions", fontsize=11, color=INK, loc="left", fontweight="bold")
-            ax.legend(["during play", "half-time interval"], fontsize=8, frameon=False, loc="upper left")
+            ax.legend(handles=[hp[0], hb[0]], labels=["during play", "half-time interval"],
+                      fontsize=8, frameon=False, loc="upper left")
         if i == 3: ax.set_xlabel("minute")
     fig.tight_layout()
     fig.savefig("fig_desc_minutes_by_position.png", dpi=300, facecolor="white")
