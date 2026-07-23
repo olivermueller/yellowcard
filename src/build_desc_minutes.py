@@ -51,6 +51,10 @@ def main():
     for d in (yel, sub):
         d["m"] = np.where(d.period == 1, d.minute.clip(upper=45), d.minute.clip(upper=90))
         d["grp"] = d.position.map(posmap)
+    # substitutions stamped at period 2, minute 45 are made DURING the
+    # half-time interval (recorded at the restart) — show them separately
+    sub["interval"] = (sub.period == 2) & (sub.minute == 45)
+    sub_play = sub[~sub.interval]
 
     n = len(mids)
     ht = (sub.period == 2) & (sub.minute == 45)
@@ -64,27 +68,43 @@ def main():
 
     bins = np.arange(0, 95, 5)
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.4), sharex=True)
-    for ax, d, c, t in [(axes[0], yel, YEL, "Yellow cards"), (axes[1], sub, BLU, "Substitutions")]:
-        ax.hist(d.m, bins=bins, color=c, edgecolor="white", lw=.8, zorder=2)
-        style(ax); ax.set_title(t, fontsize=11, color=INK, loc="left", fontweight="bold")
-        ax.set_xlabel("minute")
-        ax.text(46, ax.get_ylim()[1]*.93, "HT", fontsize=8, color="#9aa3ad")
-    axes[0].set_ylabel("events")
+    ax = axes[0]
+    ax.hist(yel.m, bins=bins, color=YEL, edgecolor="white", lw=.8, zorder=2)
+    style(ax); ax.set_title("Yellow cards", fontsize=11, color=INK, loc="left", fontweight="bold")
+    ax.set_xlabel("minute"); ax.set_ylabel("events")
+    ax.text(46, ax.get_ylim()[1]*.93, "HT", fontsize=8, color="#9aa3ad")
+    ax = axes[1]
+    ax.hist(sub_play.m, bins=bins, color=BLU, edgecolor="white", lw=.8, zorder=2,
+            label="during play")
+    ax.bar(45, sub.interval.sum(), width=2.2, color="#9fc2ea", edgecolor=BLU,
+           hatch="///", lw=.8, zorder=3, label="half-time interval")
+    style(ax); ax.set_title("Substitutions", fontsize=11, color=INK, loc="left", fontweight="bold")
+    ax.set_xlabel("minute")
+    ax.legend(fontsize=8.5, frameon=False, loc="upper left")
     fig.tight_layout()
-    fig.savefig("fig_desc_minutes_overall.png", dpi=200, facecolor="white")
+    fig.savefig("fig_desc_minutes_overall.png", dpi=300, facecolor="white")
 
     grps = ["Goalkeeper", "Defender", "Midfielder", "Forward"]
     fig, axes = plt.subplots(4, 2, figsize=(10, 9), sharex=True)
     for i, g in enumerate(grps):
-        for j, (d, c, t) in enumerate([(yel, YEL, "Yellow cards"), (sub, BLU, "Substitutions")]):
-            ax = axes[i, j]
-            ax.hist(d[d.grp == g].m, bins=bins, color=c, edgecolor="white", lw=.8, zorder=2)
-            style(ax)
-            if i == 0: ax.set_title(t, fontsize=11, color=INK, loc="left", fontweight="bold")
-            if j == 0: ax.set_ylabel(g, fontsize=10, color=INK)
-            if i == 3: ax.set_xlabel("minute")
+        ax = axes[i, 0]
+        ax.hist(yel[yel.grp == g].m, bins=bins, color=YEL, edgecolor="white", lw=.8, zorder=2)
+        style(ax)
+        if i == 0: ax.set_title("Yellow cards", fontsize=11, color=INK, loc="left", fontweight="bold")
+        ax.set_ylabel(g, fontsize=10, color=INK)
+        if i == 3: ax.set_xlabel("minute")
+        ax = axes[i, 1]
+        gg = sub[sub.grp == g]
+        ax.hist(gg[~gg.interval].m, bins=bins, color=BLU, edgecolor="white", lw=.8, zorder=2)
+        ax.bar(45, gg.interval.sum(), width=2.2, color="#9fc2ea", edgecolor=BLU,
+               hatch="///", lw=.8, zorder=3)
+        style(ax)
+        if i == 0:
+            ax.set_title("Substitutions", fontsize=11, color=INK, loc="left", fontweight="bold")
+            ax.legend(["during play", "half-time interval"], fontsize=8, frameon=False, loc="upper left")
+        if i == 3: ax.set_xlabel("minute")
     fig.tight_layout()
-    fig.savefig("fig_desc_minutes_by_position.png", dpi=200, facecolor="white")
+    fig.savefig("fig_desc_minutes_by_position.png", dpi=300, facecolor="white")
     print("\nwrote fig_desc_minutes_overall.png, fig_desc_minutes_by_position.png")
 
 
