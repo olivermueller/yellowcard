@@ -23,6 +23,13 @@
   spacing must be changed). **Decision: write in plain `article` (12 pt, `setspace` double,
   `natbib` + Chicago author-date), convert to DG layout only if requested at production.**
 
+## Style (Oliver, 2026-07-23): write in JQAS language
+Register of a sports-statistics journal, not an econometrics one: sports-analytics
+terminology first (booking/caution, match, fixture, fouls conceded), statistical methods
+described plainly; econometric machinery (Neyman orthogonality, estimands, partial
+interference) introduced gently and defined on first use; magnitudes in football terms.
+Model exemplars: recent JQAS articles (e.g., Anders & Rotthoff 2011; Wu et al. 2021).
+
 ## Framing (per backlog A + co-author meeting)
 
 Title direction: lead with the question, not the method — e.g.
@@ -98,8 +105,9 @@ main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
 ## Work plan
 
-1. [ ] New repo/Overleaf project `jqas-yellowcard-paper` seeded from the MLSA backup;
-       plain `article` double-spaced skeleton; Chicago author-date via natbib.
+1. [x] **DONE 2026-07-23:** repo `olivermueller/jqas-yellowcard-paper` (private) — double-spaced
+       `article` skeleton with per-section content notes, natbib+chicago.bst, compiles clean;
+       MLSA tex + this plan in `source_material/`.
 2. [ ] Port + rewrite section by section per the structure above (order: 3 → 5 → 6 → 4 → 2 → 1 → 7).
 3. [ ] Regenerate all figures from canonical scripts (300 dpi, separate files, sans-serif).
 4. [ ] Build T2 attrition table (small script; also closes backlog B-P2).
