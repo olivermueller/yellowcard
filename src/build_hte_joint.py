@@ -56,6 +56,7 @@ def z_design(df):
     Z["gs_leading"] = (gs == "leading").astype(float)
     Z["venue_home"] = (df.home_away == "home").astype(float)
     Z["format_league"] = (df.competition_format == "league").astype(float)
+    Z = Z.loc[:, Z.nunique() > 1]          # constant moderators (e.g. format in Spec B) drop
     age_std = (df.age - df.age.mean()) / df.age.std()
     Z["age_std"] = age_std
     Z["age_std_sq"] = age_std ** 2
@@ -94,7 +95,9 @@ def main():
             coef_rows.append(dict(dv=lab, term=nm, coef=round(bi, 4), se=round(si, 4), p=round(pi, 4)))
         # block F-tests + BH within DV
         pvals = {}
-        for bl, cols in BLOCKS.items():
+        blocks = {k: [c for c in v if c in names] for k, v in BLOCKS.items()}
+        blocks = {k: v for k, v in blocks.items() if v}
+        for bl, cols in blocks.items():
             R = np.zeros((len(cols), len(names)))
             for i, c in enumerate(cols):
                 R[i, names.index(c)] = 1
@@ -106,7 +109,7 @@ def main():
         m = len(pvals); order = sorted(pvals.items(), key=lambda kv: kv[1]); qs = {}; prev = 1.0
         for rank in range(m, 0, -1):
             nm_, pv = order[rank - 1]; prev = min(prev, pv * m / rank); qs[nm_] = prev
-        for bl in BLOCKS:
+        for bl in blocks:
             block_rows.append(dict(dv=lab, block=bl, F_p=round(pvals[bl], 4), BH_q=round(qs[bl], 4)))
         block_rows.append(dict(dv=lab, block="OVERALL_heterogeneity", F_p=round(p_overall, 4), BH_q=np.nan))
 

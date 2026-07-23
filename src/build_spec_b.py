@@ -30,7 +30,8 @@ BOOKS = [("B365H", "B365D", "B365A"), ("PSH", "PSD", "PSA"), ("BWH", "BWD", "BWA
          ("IWH", "IWD", "IWA"), ("WHH", "WHD", "WHA")]
 MANUAL2 = dict(MANUAL)
 MANUAL2.update({"Wolverhampton Wanderers": "Wolves", "Deportivo Alavés": "Alaves",
-                "Atlético Madrid": "Ath Madrid", "Athletic Club": "Ath Bilbao"})
+                "Atlético Madrid": "Ath Madrid", "Athletic Club": "Ath Bilbao",
+                "Bolton Wanderers": "Bolton", "Stade Brestois": "Brest"})
 
 
 def season_code(season):
@@ -109,6 +110,15 @@ def main():
     m["h"] = m.home.map(mapping); m["a"] = m.away.map(mapping)
     j = m.merge(odds, left_on=["match_date", "h", "a"],
                 right_on=["date", "HomeTeam", "AwayTeam"], how="left")
+    # rescue postponed/off-by-date fixtures within +-3 days
+    miss = j[j.oH.isna()]
+    if len(miss):
+        o2 = odds.copy(); o2["dt"] = pd.to_datetime(o2.date)
+        for i, r in miss.iterrows():
+            cand = o2[(o2.HomeTeam == r.h) & (o2.AwayTeam == r.a)]
+            cand = cand[(cand.dt - pd.to_datetime(r.match_date)).abs().dt.days <= 3]
+            if len(cand):
+                j.loc[i, ["oH", "oD", "oA"]] = cand.iloc[0][["oH", "oD", "oA"]].values
     print(f"odds joined: {j.oH.notna().sum()}/{len(m)} matches")
     miss = j[j.oH.isna()]
     if len(miss):

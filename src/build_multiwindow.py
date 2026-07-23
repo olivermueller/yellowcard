@@ -38,11 +38,8 @@ def tname(t, dt):
 
 
 def load_all():
-    df = pd.read_csv("data/analysis_frame.csv", low_memory=False)
-    df = df[df.gender == "male"].reset_index(drop=True)
-    dob = pd.read_parquet("data/player_dob.parquet")[["player_id", "dob"]]
-    df = df.merge(dob, on="player_id", how="left")
-    df["age"] = (pd.to_datetime(df.match_date) - pd.to_datetime(df.dob)).dt.days / 365.25
+    from build_male_dml import load as load_spec
+    df = load_spec()                      # SPEC B: male EU leagues, age+odds
     mids = df.match_id.unique().tolist()
     ev = pd.read_parquet("data/events.parquet",
         columns=["match_id", "player_id", "team", "type", "duel_type", "period", "minute",
@@ -108,7 +105,8 @@ def build_extras(cand, frame, ev, book):
              .groupby(["match_id", "player_id"]).position.first().map(posmap).rename("position_group"))
     # one team-level donor row per (match, team)
     team_cols = ([c for c in frame.columns if c.startswith("pre_diff_n_")]
-                 + ["pre_score_diff", "home_away", "competition_type", "match_date"])
+                 + ["pre_score_diff", "home_away", "competition_type", "match_date",
+                    "odds_p_home", "odds_p_draw"])
     donor = frame.drop_duplicates(["match_id", "team_id"])[["match_id", "team_id"] + team_cols]
 
     X = cand.merge(pos, on=["match_id", "player_id"], how="left")
@@ -125,6 +123,8 @@ def build_extras(cand, frame, ev, book):
     dob = pd.read_parquet("data/player_dob.parquet")[["player_id", "dob"]]
     X = X.merge(dob, on="player_id", how="left")
     X["age"] = (pd.to_datetime(X.match_date) - pd.to_datetime(X.dob)).dt.days / 365.25
+    X["odds_p_win"] = np.where(X.home_away == "home", X.odds_p_home,
+                               1 - X.odds_p_home - X.odds_p_draw)
     return X
 
 

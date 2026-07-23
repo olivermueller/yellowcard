@@ -24,8 +24,11 @@ WINDOWS = [50, 60, 70, 80]
 
 def main():
     af = pd.read_csv("data/analysis_frame.csv",
-                     usecols=["match_id", "gender", "position", "position_group"], low_memory=False)
-    af = af[af.gender == "male"]
+                     usecols=["match_id", "gender", "competition", "season",
+                              "position", "position_group"], low_memory=False)
+    af = af[(af.gender == "male")
+            & af.competition.isin(["La Liga", "Ligue 1", "Premier League", "Serie A", "1. Bundesliga"])
+            & ~af.season.isin(["1973/1974", "1986/1987"])]      # SPEC B match universe
     mids = af.match_id.unique().tolist()
     posmap = af.drop_duplicates("position").set_index("position").position_group.to_dict()
     posmap["Goalkeeper"] = "Goalkeeper"

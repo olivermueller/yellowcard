@@ -35,22 +35,34 @@ HGB = dict(max_iter=400, learning_rate=0.05, min_samples_leaf=200, random_state=
 CARD = ["foul_committed_card", "bad_behaviour_card"]
 
 
+EU_LEAGUES = ["La Liga", "Ligue 1", "Premier League", "Serie A", "1. Bundesliga"]
+
+
 def load():
+    """SPEC B (canonical since 2026-07-23): male, five European domestic
+    leagues (archival 1973/74 + 1986/87 singles dropped), age + betting
+    odds merged, complete-case on both."""
     df = pd.read_csv("data/analysis_frame.csv", low_memory=False)
-    df = df[df.gender == "male"]
+    df = df[(df.gender == "male") & df.competition.isin(EU_LEAGUES)]
+    df = df[~df.season.isin(["1973/1974", "1986/1987"])]
     dob = pd.read_parquet("data/player_dob.parquet")[["player_id", "dob"]]
     df = df.merge(dob, on="player_id", how="left")
     df["age"] = (pd.to_datetime(df.match_date) - pd.to_datetime(df.dob)).dt.days / 365.25
+    odds = pd.read_csv("data/odds/odds_european_male.csv")
+    df = df.merge(odds, on="match_id", how="left")
     n0 = len(df)
-    df = df.dropna(subset=["age"]).reset_index(drop=True)
-    print(f"sample: {len(df):,} rows ({n0-len(df):,} dropped for missing age, "
-          f"{100*(n0-len(df))/n0:.2f}%) | treated {int(df.treat_yellow_card.sum()):,}")
+    df = df.dropna(subset=["age", "odds_p_home"]).reset_index(drop=True)
+    df["odds_p_win"] = np.where(df.home_away == "home", df.odds_p_home,
+                                1 - df.odds_p_home - df.odds_p_draw)
+    print(f"SPEC-B sample: {len(df):,} rows ({n0-len(df):,} dropped: missing age/odds) | "
+          f"treated {int(df.treat_yellow_card.sum()):,}")
     return df
 
 
 def build_W(df):
     W, _, _, _, _, _ = build_W_Z(df)
-    W = pd.concat([W, df[["age"]].astype(float)], axis=1)
+    extra = [c for c in ["age", "odds_p_win", "odds_p_draw"] if c in df.columns]
+    W = pd.concat([W, df[extra].astype(float)], axis=1)
     return W.loc[:, W.nunique() > 1]
 
 

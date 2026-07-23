@@ -28,12 +28,8 @@ DVS = ["post_n_def_events", "post_n_pressure", "post_n_tackle", "post_n_foul_com
 
 
 def main():
-    df = pd.read_csv("data/analysis_frame.csv", low_memory=False)
-    df = df[df.gender == "male"]
-    dob = pd.read_parquet("data/player_dob.parquet")[["player_id", "dob"]]
-    df = df.merge(dob, on="player_id", how="left")
-    df["age"] = (pd.to_datetime(df.match_date) - pd.to_datetime(df.dob)).dt.days / 365.25
-    df = df.dropna(subset=["age"]).reset_index(drop=True)
+    from build_male_dml import load as load_spec
+    df = load_spec()                      # SPEC B
 
     tc = df.groupby(["match_id", "team_id"]).treat_yellow_card.sum()
     df = df.join(tc.rename("team_n"), on=["match_id", "team_id"])
@@ -42,9 +38,8 @@ def main():
     print(f"sample: {len(d):,} ({len(df)-len(d):,} teammate-exposed controls dropped) | "
           f"treated {int(d.treat_yellow_card.sum()):,}")
 
-    W, _, _, _, _, _ = build_W_Z(d)
-    W = pd.concat([W, d[["age"]].astype(float)], axis=1)
-    W = W.loc[:, W.nunique() > 1]
+    from build_male_dml import build_W as bw
+    W = bw(d)
     t = d.treat_yellow_card.astype(int).values
     groups = d.match_id.values
     cv = GroupKFold(5)
