@@ -39,18 +39,9 @@ def main():
                         label="Lee identification bounds")
         ax.errorbar(xs, est, yerr=ci, fmt="o", color=BLU, ms=6, capsize=4,
                     elinewidth=1.6, zorder=3, label="DML estimate (95% CI)")
-        # within-half placebo (30-45, treatment 15-30)
-        pl = mw[(mw.dv == dv) & (mw.window == "30-45")].iloc[0]
-        pe = 100 * pl.ate / pl.control_mean
-        pc = 196 * pl.se / pl.control_mean
-        ax.errorbar([-1.1], [pe], yerr=[pc], fmt="o", mfc="white", color=RED,
-                    ms=6, capsize=4, elinewidth=1.6, zorder=3,
-                    label="within-half placebo (30–45′)")
-        ax.axvline(-0.55, color=MUT, lw=1, ls=":")
         ax.axhline(0, color="#444", lw=1, zorder=2)
-        ax.set_xticks(np.concatenate([[-1.1], xs]))
-        ax.set_xticklabels(["30–45′\n(T: 15–30′)"] + [w.replace("-", "–") + "′" for w in wins],
-                           fontsize=9)
+        ax.set_xticks(xs)
+        ax.set_xticklabels([w.replace("-", "–") + "′" for w in wins], fontsize=9)
         ax.set_title(ttl, loc="left", fontsize=11, fontweight="bold", color=INK)
         ax.grid(axis="y", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
         for sp in ["top", "right"]: ax.spines[sp].set_visible(False)

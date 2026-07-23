@@ -4,8 +4,8 @@ Replaces the one-at-a-time subgroup CATEs (which treat every Z independently)
 with the best-linear-predictor of the CATE: regress the outcome residual on
 the treatment residual interacted with the FULL moderator design,
 
-    Y_res ~ (1, Z) * T_res ,   Z = [pos5 dummies, game state, venue,
-                                    format, age (continuous, std), age^2]
+    Y_res ~ (1, Z) * T_res ,   Z = [pos5 dummies, game state,
+                                    age, age^2, odds_p_win, odds_p_win^2]
 
 so each coefficient is that moderator's contribution holding the others
 fixed. Cluster-robust (match) inference; per-block F-tests with BH across
@@ -54,20 +54,20 @@ def z_design(df):
     gs = np.where(df.ht_score_diff < 0, "trailing", np.where(df.ht_score_diff > 0, "leading", "level"))
     Z["gs_trailing"] = (gs == "trailing").astype(float)
     Z["gs_leading"] = (gs == "leading").astype(float)
-    Z["venue_home"] = (df.home_away == "home").astype(float)
-    Z["format_league"] = (df.competition_format == "league").astype(float)
-    Z = Z.loc[:, Z.nunique() > 1]          # constant moderators (e.g. format in Spec B) drop
+    Z = Z.loc[:, Z.nunique() > 1]          # constant moderators drop
     age_std = (df.age - df.age.mean()) / df.age.std()
     Z["age_std"] = age_std
     Z["age_std_sq"] = age_std ** 2
+    odds_std = (df.odds_p_win - df.odds_p_win.mean()) / df.odds_p_win.std()
+    Z["odds_std"] = odds_std
+    Z["odds_std_sq"] = odds_std ** 2
     return Z, pos5
 
 
 BLOCKS = {"position": ["pos_WideDef", "pos_DefMid", "pos_OffMid", "pos_Forward"],
           "game_state": ["gs_trailing", "gs_leading"],
-          "venue": ["venue_home"],
-          "format": ["format_league"],
-          "age": ["age_std", "age_std_sq"]}
+          "age": ["age_std", "age_std_sq"],
+          "odds": ["odds_std", "odds_std_sq"]}
 
 
 def main():

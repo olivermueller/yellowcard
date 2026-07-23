@@ -1,12 +1,9 @@
 """Figure for the joint heterogeneity analysis (paper F4).
 
-Three panels from the joint theta(Z) model for FOULS (the only DV with
-significant heterogeneity, overall p=.0007):
-  A: implied effect per tactical position (5 groups), other moderators at
-     sample means, 95% cluster-robust CIs;
-  B: implied effect per half-time game state;
-  C: implied effect as a continuous function of age (the null, visibly),
-     with a pointwise 95% band.
+Four panels from the joint theta(Z) model for FOULS (the only DV with
+significant heterogeneity): A position (5 groups), B half-time game
+state, C age (continuous), D pre-match win probability (continuous);
+C and D display the nulls visibly with pointwise 95% bands.
 
 Output: fig_hte_joint.png (300 dpi; also usable as a separate-file figure
 for JQAS after EPS/TIF conversion).
@@ -48,7 +45,8 @@ def main():
     b, V = np.asarray(fit.params), np.asarray(fit.cov_params())
     zbar = X.mean().values
 
-    fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.2), sharey=True)
+    fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.6), sharey=True)
+    axes = axes.ravel()
 
     def style(ax):
         ax.grid(axis="y", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
@@ -99,7 +97,7 @@ def main():
                 ecolor=INK, elinewidth=1.4, capsize=4, zorder=3)
     ax.set_xticks(xs); ax.set_xticklabels(["trailing", "level", "leading"], fontsize=9.5)
     ax.set_title("B  Half-time game state", loc="left", fontsize=11, fontweight="bold", color=INK)
-    ax.text(.98, .04, "block p = .005", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
+    ax.text(.98, .04, "block p = .002", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
     style(ax)
 
     # --- C: age (continuous) ---
@@ -116,8 +114,27 @@ def main():
     ax.fill_between(ages, los, his, color=BLU, alpha=.18, lw=0, zorder=1)
     ax.plot(ages, ths, color=BLU, lw=2, zorder=2)
     ax.set_xlabel("age at match (years)")
+    ax.set_ylabel("effect on fouls, 45–60′ (events)")
     ax.set_title("C  Age", loc="left", fontsize=11, fontweight="bold", color=INK)
-    ax.text(.98, .04, "block p = .51 (n.s.)", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
+    ax.text(.98, .04, "block p = .84 (n.s.)", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
+    style(ax)
+
+    # --- D: pre-match win probability (continuous) ---
+    ax = axes[3]
+    ops = np.linspace(df.odds_p_win.quantile(.02), df.odds_p_win.quantile(.98), 60)
+    omu, osd = df.odds_p_win.mean(), df.odds_p_win.std()
+    ths, los, his = [], [], []
+    for o in ops:
+        z = zbar.copy()
+        z[names.index("odds_std")] = (o - omu) / osd
+        z[names.index("odds_std_sq")] = ((o - omu) / osd) ** 2
+        th, se = implied(z, b, V)
+        ths.append(th); los.append(th - 1.96 * se); his.append(th + 1.96 * se)
+    ax.fill_between(ops, los, his, color=BLU, alpha=.18, lw=0, zorder=1)
+    ax.plot(ops, ths, color=BLU, lw=2, zorder=2)
+    ax.set_xlabel("pre-match win probability")
+    ax.set_title("D  Pre-match win probability", loc="left", fontsize=11, fontweight="bold", color=INK)
+    ax.text(.98, .04, "block p = .24 (n.s.)", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
     style(ax)
 
     fig.suptitle("")

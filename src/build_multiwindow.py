@@ -1,4 +1,4 @@
-"""Multi-window DML (backlog C): outcomes for 30-45, 45-50, 45-60, 45-70, 45-80.
+"""Multi-window DML (backlog C): outcomes for 45-50, 45-60, 45-70, 45-80.
 
 Windows and samples (male, outfield starters, complete-case on age):
   45-b  : treatment = first yellow [15,45]; outcome = counts in period 2,
@@ -192,18 +192,6 @@ def main():
               f"treated={int(d.treat_yellow_card.sum()):,}", flush=True)
         results += run_window(f"45-{b}", d)
         print(pd.DataFrame(results[-4:]).to_string(index=False), flush=True)
-
-    # ---- first-half window 30-45 (treatment 15-30) ----
-    elig = starters  # on pitch all of H1
-    f = frame.merge(elig[["match_id", "player_id"]], on=["match_id", "player_id"])
-    cand = elig[~elig.in_frame][["match_id", "team_id", "player_id"]]
-    extras = build_extras(cand, frame, ev, book)
-    counts = window_counts(ev, 1, 30, None)
-    d = assemble(f, extras, counts, 15, 30, book, drop_booked_outside=(30.001, 47))
-    d = d[~d.book_min.between(0, 14.999) | (d.treat_yellow_card == 1)]
-    print(f"[30-45] n={len(d):,} treated={int(d.treat_yellow_card.sum()):,}", flush=True)
-    results += run_window("30-45", d)
-    print(pd.DataFrame(results[-4:]).to_string(index=False), flush=True)
 
     res = pd.DataFrame(results)
     res.to_csv("data/multiwindow_results.csv", index=False)
