@@ -182,6 +182,7 @@ def main():
     age_t = pd.qcut(df.age, 3, labels=["young", "mid", "old"]).astype(str)
     mods = {"position": df.position_group.values, "venue": df.home_away.values,
             "game_state": gs, "format": df.competition_format.values, "age": age_t.values}
+    mods = {k: v for k, v in mods.items() if pd.Series(v).nunique() > 1}   # constant in Spec B -> skip
     sub_rows = []
     for dv in ["post_n_foul_committed", "post_n_def_events"]:
         joint_ps = {}

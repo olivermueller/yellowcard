@@ -1,9 +1,9 @@
 spec,dv,control_mean,ate,se,p,rel
-B_age,def_engagement,3.481,-0.2061,0.049,0.0,-5.9%
-B_age,pressures,2.872,-0.1413,0.0414,0.0006,-4.9%
-B_age,tackles,0.347,-0.0012,0.0126,0.9245,-0.3%
-B_age,fouls,0.262,-0.0684,0.0096,0.0,-26.1%
-B_age_odds,def_engagement,3.481,-0.2234,0.0489,0.0,-6.4%
-B_age_odds,pressures,2.872,-0.1475,0.0413,0.0004,-5.1%
-B_age_odds,tackles,0.347,-0.0014,0.0126,0.9132,-0.4%
-B_age_odds,fouls,0.262,-0.0702,0.0096,0.0,-26.8%
+B_age,def_engagement,3.481,-0.2002,0.0491,0.0,-5.7%
+B_age,pressures,2.873,-0.128,0.0416,0.0021,-4.5%
+B_age,tackles,0.347,-0.0014,0.0126,0.914,-0.4%
+B_age,fouls,0.262,-0.0678,0.0096,0.0,-25.9%
+B_age_odds,def_engagement,3.481,-0.2118,0.049,0.0,-6.1%
+B_age_odds,pressures,2.873,-0.1427,0.0415,0.0006,-5.0%
+B_age_odds,tackles,0.347,-0.0012,0.0125,0.9245,-0.3%
+B_age_odds,fouls,0.262,-0.069,0.0096,0.0,-26.4%

@@ -40,8 +40,8 @@ framing ("we invite the community to adopt causal ML") moves to a short discussi
 ## Structure and page budget (≈28 double-spaced pages)
 
 1. **Introduction (≈4 pp).** The half-time dilemma; deterrence hypothesis; preview of the
-   three-margin answer: coaches withdraw booked players ~2.4× more often, surviving players cut
-   fouls ~25% (tackling untouched), teammates partially compensate (+5%). One paragraph on why
+   three-margin answer: coaches withdraw booked players ~2.7× more often at half-time, surviving players cut
+   fouls ~26% (tackling untouched), teammates partially compensate (+4.5%). One paragraph on why
    observational causal inference is required.
 2. **Related work (≈3 pp).** Three strands, all *between-match or team-level* — none
    estimates the in-game, player-level effect of a booking:
@@ -63,14 +63,16 @@ framing ("we invite the community to adopt causal ML") moves to a short discussi
    half-time substitution decision actually turns on. (Verify/complete citations while
    writing; candidates flagged above.)
 3. **Data and design (≈5 pp).**
-   - StatsBomb open data; **canonical sample**: male, outfield **lineup-verified starters**, no
-     H1 exit, on pitch through the outcome window; ~52k player-matches, ~3.0k treated.
+   - StatsBomb open data; **canonical sample (Spec B)**: male, five European domestic leagues,
+     outfield lineup-verified starters, no H1 exit, on pitch through the outcome window;
+     age (Wikidata) + betting odds (football-data) in W — the filter is justified by
+     covariate coverage; 43,527 player-matches, 2,650 treated.
    - **Attrition/eligibility table** (backlog B-P2): from raw player-matches to the analysis
      sample, step by step (lineup-verified starters, no H1 exit, on pitch through the window).
    - Windows: pre [0,15) → treatment [15,45] → outcomes 45–b for b ∈ {50,60,70,80};
      Table 1 (variable families) updated with age (Wikidata DOB, 98.6% coverage).
    - Descriptives: booking/substitution timing histograms; **censoring table** (withdrawal
-     4.8% vs 1.96% at HT; per-window trims 3.2–11.6%).
+     4.0% vs 1.48% at HT (~2.7x); per-window trims 2.5–10.4%).
 4. **Methods (≈4.5 pp).** Partial-linear DML (expanded per backlog G: orthogonality,
    cross-fitting, GroupKFold by match, clustered inference); subgroup CATEs + BH; **selection
    into observation and Lee bounds**: estimand = effect among always-on-pitch players;
@@ -79,20 +81,22 @@ framing ("we invite the community to adopt causal ML") moves to a short discussi
    Hudgens–Halloran (partial interference).
 5. **Results (≈7 pp).**
    - **Main effects:** descriptive treated-vs-control differences (raw means per DV), then
-     the DML estimates: fouls −25.6%***, def. engagement −5.7%***, pressures −4.3%**,
-     tackles null. (No naive-OLS / OLS+W estimator ladder — DML is the single estimator.)
+     the DML estimates: fouls −26.5%***, def. engagement −6.1%***, pressures −4.9%***,
+     tackles null (−0.2%, p=.96). (No estimator ladder — DML is the single estimator.)
    - **Coach response:** booking ×2.4 HT withdrawal — the extensive margin (own result).
-   - **Multi-window (durability):** fouls −23…−27% stable 45′→80′; immediate onset at 45–50′;
-     30–45′ contamination check motivates the H2 design.
+   - **Multi-window (durability):** fouls −24.8…−29.4% stable 45′→80′; onset at full strength
+     45–50′ (−28.1%); 30–45′ contamination check (+13.9%) motivates the H2 design.
    - **Heterogeneity:** game state (q=.012) and position (q=.005) moderate; age tested, null.
-   - **Teammate spillover (third margin):** +5.4% fouls (p=.0035) for non-carded teammates;
-     direct effect vs unexposed controls −22.6%*** (robustness; mixture ATE stays primary).
+   - **Teammate spillover (third margin):** +4.5% fouls (p=.023) for non-carded teammates;
+     direct effect vs unexposed controls −23.1%*** (robustness; mixture ATE stays primary).
 6. **Robustness and identification (≈3.5 pp).** Rewritten §3.4 on canonical numbers:
-   positivity ê∈[0.020, 0.159], ATE invariant to trimming; Cinelli–Hazlett RV 1.80% ≈ 6× the
-   strongest observed benchmark; SUTVA discussion re-centred on the measured spillover +
-   caveats (opponent-side untested; match-heat upper bound); **Lee-bounds table** (count +
-   binary, IM CIs) + plausibility figure (withdrawn players are below-average activity types);
-   betting-odds robustness sentence (evaluated on league subsample; estimates unchanged).
+   positivity ê∈[0.010, 0.284], ATE invariant to trimming; Cinelli–Hazlett RV 2.06%; SUTVA
+   re-centred on the measured spillover + caveats (opponent-side untested; match-heat upper
+   bound); **Lee-bounds table** (count + binary, IM CIs): at the 45–50′ anchor ALL binary
+   point-identification bounds exclude zero incl. P(any foul) [−2.85, −0.13]pp; P(any foul)
+   zero-excluded WITH Imbens–Manski 95% CIs at 45–70′ and 45–80′; plausibility figure
+   (withdrawn players are below-average activity types). Odds are IN W by design (no
+   separate odds-robustness needed; note Spec-A comparison available).
 7. **Discussion & conclusion (≈2.5 pp).** Selective caution as deterrence; implications for
    the substitution decision (early substitution often unnecessary; teammate compensation as a
    hidden cost); limitations (15–35′ windows, open-data scope, always-on-pitch estimand);
