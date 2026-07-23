@@ -107,6 +107,17 @@ F3 multi-window effect profile with bounds (new — the money figure) · F4 subg
 F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 descriptives +
 main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
+## Status (2026-07-23, end of day)
+
+Written and pushed: Sections 3-6 complete (compiled clean), all figures/tables placed.
+- Section 3 Data and design: source + single-club caveat (with inline complete-seasons check), attrition table, windows [45,b], b in {50,60,70,80,90}, variables (Z = position5, score state, age, win probability; venue W-only), selection descriptives; timing appendix (interval subs separated, outfield only, common y-limits).
+- Section 4: Identification and estimation strategy (merged) / Quantifying heterogeneous treatment effects / Accounting for selection bias. Design + DAG figures integrated (updated drawio exports).
+- Section 5: Main effects across outcome windows (raw means + DML table; five-window profile figure, no bounds; substitution finding folded in; full-half tackle note) / Effect heterogeneity (2x2 figure incl. win-probability null; forwards now marginal p=.057) / Spillover effects. 30-45 placebo REMOVED (window dropped from analysis).
+- Section 6 (renamed: Identification assumptions and robustness): expanded, sober register; overlap figure + trimming ladder; sensitivity contour figure (RV 2.1%/1.1%); interference; selection bounds (count-bounds figure + binary bounds table incl. 45-90; P(any foul) zero-excluded at all five windows, IM CIs at the three longest). No sample-composition subsection (folded into 3.1).
+- Register rules: no narrative tone (twice corrected), no "caution", player vs player-match precision.
+
+Remaining: Section 2 Related work, Section 1 Introduction, Section 7 Discussion, abstract + keywords; machinery-evaluation appendix (3 exhibits, timing placebo first — see backlog G); de-identification pass; Chicago bib conversion for related-work citations; deck sync.
+
 ## Work plan
 
 1. [x] **DONE 2026-07-23:** repo `olivermueller/jqas-yellowcard-paper` (private) — double-spaced

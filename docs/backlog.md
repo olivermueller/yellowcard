@@ -30,6 +30,7 @@
 - [ ] **(P3)** (Considered, deprioritised) per-minute normalisation — superseded by multi-window; revisit only if windows prove insufficient.
 
 ## D. Outcomes / targets
+- [x] **(P1)** **45-90 window added (2026-07-23)** across multiwindow + count/binary bounds + IM: fouls -28.7%***; def_eng -8.1%***; tackles -6.5% (p=.008, only window with a tackle effect; never-substituted subsample caveat); P(any foul) bounds [-18.2,-4.6]pp zero-excluded incl. IM. H1 window (30-45) REMOVED from the analysis (and placebo from the paper). Z revised: venue OUT, betting odds IN (continuous+quadratic; null, block p=.24); forwards effect now marginal (-17.0%, p=.057).
 - [ ] **(P2)** **More granular tactical positions (added 2026-07-23):** split Defenders into central vs left/right (full/wing backs); split Midfielders into defensive vs offensive; keep Forwards as one group. Use StatsBomb position strings (already mapped in notebook 02's POSITION_GROUP). Rerun position heterogeneity (and consider as bounds cell dimension) on the 5-group scheme; check treated cell sizes first (BH across more subgroups costs power).
 - [ ] **(P1)** Keep **overall defensive actions** as a headline outcome.
 - [ ] **(P1)** Add **fine-grained defensive actions** (decompose the aggregate).
