@@ -1,8 +1,8 @@
 """Multi-window effect profile (paper F3, 'money figure').
 
 Relative DML effects on fouls and defensive engagement across the H2
-outcome windows 45-50/60/70/80 (points, 95% cluster-robust CIs) with the
-conditional Lee identification bounds as a shaded band, plus the 30-45
+outcome windows 45-50/60/70/80 (points, 95% cluster-robust CIs). Lee
+bounds appear separately in the Section-6 figure (build_bounds_figure). 30-45
 within-half placebo (treatment 15-30) as a separated open marker.
 
 Inputs: data/multiwindow_results.csv, data/lee_bounds_windows_im.csv.
@@ -22,7 +22,6 @@ def rel(v):  # "+12.3%" -> 12.3
 
 def main():
     mw = pd.read_csv("data/multiwindow_results.csv")
-    bd = pd.read_csv("data/lee_bounds_windows_im.csv")
     wins = ["45-50", "45-60", "45-70", "45-80"]
     xs = np.arange(len(wins))
 
@@ -30,13 +29,8 @@ def main():
     for ax, dv, ttl in [(axes[0], "fouls", "Fouls"),
                         (axes[1], "def_engagement", "Defensive engagement")]:
         m = mw[mw.dv == dv].set_index("window")
-        b = bd[bd.dv == dv].set_index("window")
         est = [100 * m.loc[w, "ate"] / m.loc[w, "control_mean"] for w in wins]
         ci = [196 * m.loc[w, "se"] / m.loc[w, "control_mean"] for w in wins]
-        lo = [rel(b.loc[w, "lee_lo_rel"]) for w in wins]
-        hi = [rel(b.loc[w, "lee_hi_rel"]) for w in wins]
-        ax.fill_between(xs, lo, hi, color=BLU, alpha=.13, lw=0, zorder=1,
-                        label="Lee identification bounds")
         ax.errorbar(xs, est, yerr=ci, fmt="o", color=BLU, ms=6, capsize=4,
                     elinewidth=1.6, zorder=3, label="DML estimate (95% CI)")
         ax.axhline(0, color="#444", lw=1, zorder=2)
