@@ -21,9 +21,12 @@ def main():
     bd = pd.read_csv("data/lee_bounds_windows.csv")
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
     xs = np.arange(len(wins))
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), sharex=True)
+    fig, axes = plt.subplots(2, 2, figsize=(11, 7.6), sharex=True)
+    axes = axes.ravel()
     for ax, dv, ttl in [(axes[0], "fouls", "Fouls"),
-                        (axes[1], "def_engagement", "Defensive engagement")]:
+                        (axes[1], "def_engagement", "Defensive engagement"),
+                        (axes[2], "pressures", "Pressures"),
+                        (axes[3], "tackles", "Tackles")]:
         m = mw[mw.dv == dv].set_index("window")
         b = bd[bd.dv == dv].set_index("window")
         est = [100 * m.loc[w, "ate"] / m.loc[w, "control_mean"] for w in wins]
@@ -40,7 +43,8 @@ def main():
         ax.set_title(ttl, loc="left", fontsize=11, fontweight="bold", color=INK)
         ax.grid(axis="y", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
         for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
-    axes[0].set_ylabel("effect relative to control mean (%)")
+    for i in (0, 2):
+        axes[i].set_ylabel("effect relative to control mean (%)")
     axes[0].legend(fontsize=8.5, frameon=False, loc="lower left")
     fig.tight_layout()
     fig.savefig("fig_bounds.png", dpi=300, facecolor="white")
