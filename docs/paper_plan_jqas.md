@@ -46,7 +46,7 @@ framing ("we invite the community to adopt causal ML") moves to a short discussi
    - **Suspension deterrence ACROSS matches:** VanDerwerken, Rothert & Nguelifack (2018,
      J. Sports Economics — 12-23% foul reduction when one card from suspension); strategic
      "suspension by choice" (fifth-yellow timing); fouling-incentive studies (Deutscher et
-     al. 2013; "Foul Play", 2025).
+     al. 2013).
    - **Cards as referee decisions:** referee bias/consistency literature (Buraimo, Forrest &
      Simmons; "Yellow fever", JRSS-A 2025; Unkelbach & Memmert) — cards as outcomes, not
      treatments.
