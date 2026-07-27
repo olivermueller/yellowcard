@@ -11,9 +11,6 @@ Completed items are removed from this list; the full record of decisions and res
 - [ ] **(P2)** Write abstract (~200 words) + §1 Introduction (lead with the football/behaviour question; three margins: coach withdrawal 2.7x, player fouls −26.5%, teammates +4.5%) + keywords (3–6, not in title).
 - [ ] **(P1)** Write §7 Discussion and conclusion.
 
-## C. Survival bias / outcome window
-- [ ] **(P3)** (Considered, deprioritised) per-minute normalisation — superseded by multi-window; revisit only if windows prove insufficient.
-
 ## D. Outcomes / targets
 - [ ] **(P1)** Add **fine-grained defensive actions** (decompose the aggregate). *Status: manuscript currently uses the 4-outcome set; decide whether the decomposition goes into a revision round or is dropped.*
 - [ ] **(P1)** Add **"error" events** — dispossessed, unforced errors, miscontrols, etc. *Status: not in the current manuscript; decide keep/drop.*
