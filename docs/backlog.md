@@ -16,9 +16,6 @@ Completed items are removed from this list; the full record of decisions and res
 - [ ] **(P1)** Add **"error" events** — dispossessed, unforced errors, miscontrols, etc. *Status: not in the current manuscript; decide keep/drop.*
 - [ ] **(P2)** Add **rate-based targets** (e.g., duel/tackle win rate) alongside raw counts. *Status: not in the current manuscript; decide keep/drop.*
 
-## E. Covariates
-- [ ] **(P3)** Elo, player market values — **not pursued** for now (explicitly out of scope).
-
 ## F. Publication strategy (two papers)
 - [~] **(P1)** **Paper 1 ("yellow cards")** → JQAS. This backlog covers Paper 1. **Status 2026-07-24: manuscript repo `jqas-yellowcard-paper` (Overleaf-linked); §3–§6 + Appendices A/B written on final Spec-B numbers; compiles at 25 double-spaced pages (guideline 20–30). Open: §1, §2, §7, abstract, machinery appendix, de-identification, Chicago-format bibliography for §2 references.**
 - [ ] **(P3)** **Paper 2 (methods-forward, Call for Causal ML)** → Journal of Sports Analytics; *different* treatment (X) and outcome (Y). Park as a separate future track — not part of Paper 1's critical path.
