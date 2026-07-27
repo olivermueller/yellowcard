@@ -16,10 +16,8 @@ Completed items are removed from this list; the full record of decisions and res
 - [ ] **(P1)** Add **"error" events** — dispossessed, unforced errors, miscontrols, etc. *Status: not in the current manuscript; decide keep/drop.*
 - [ ] **(P2)** Add **rate-based targets** (e.g., duel/tackle win rate) alongside raw counts. *Status: not in the current manuscript; decide keep/drop.*
 
-## F. Publication strategy (two papers)
+## F. Publication strategy
 - [~] **(P1)** **Paper 1 ("yellow cards")** → JQAS. This backlog covers Paper 1. **Status 2026-07-24: manuscript repo `jqas-yellowcard-paper` (Overleaf-linked); §3–§6 + Appendices A/B written on final Spec-B numbers; compiles at 25 double-spaced pages (guideline 20–30). Open: §1, §2, §7, abstract, machinery appendix, de-identification, Chicago-format bibliography for §2 references.**
-- [ ] **(P3)** **Paper 2 (methods-forward, Call for Causal ML)** → Journal of Sports Analytics; *different* treatment (X) and outcome (Y). Park as a separate future track — not part of Paper 1's critical path.
-
 ## G. Manuscript production (JQAS)
 - [ ] **(P1)** **Evaluation of the DML machinery (appendix; discussed 2026-07-23):** reviewers expect nuisance-fit evidence even though it is not the real test; provide a 4-exhibit package: (a) out-of-fold nuisance metrics (AUC/Brier for e(W), R2 for m(W)) + propensity CALIBRATION plot; (b) insensitivity table — learner swap (lasso/logit, random forest, HGB variants) x 4 DVs + tau-hat spread over ~20 cross-fitting seeds + residual-balance joint F (T_res vs W); (c) timing placebo (most informative of the three; to be run first): 'effect' of a future booking (60-75) on 45-60 behaviour among players unbooked through 60 — must be ~0 under unconfoundedness; the 30-45 result shows the test is able to detect contamination; doubles as Section-6 identification evidence. Semi-synthetic recovery experiment DROPPED (Oliver 2026-07-23: not a methods paper — candidate for Paper 2/JSA instead). Framing sentence: nuisance fit is not the estimand; we evaluate by insensitivity, falsifiable implications, and recovery of known effects.
 - [ ] **(P2)** Robustness: treatment-definition sensitivity ([15′,45′]) still open; the timing placebo is folded into the machinery-evaluation item above.
