@@ -107,6 +107,41 @@ F3 multi-window effect profile with bounds (new — the money figure) · F4 subg
 F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 descriptives +
 main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
+## Status (2026-07-27)
+
+Since 2026-07-24: completeness rule implemented (full 4x5 binary-bounds table, spillover
+table both panels, appendix table of all joint-moderator coefficients, both window figures
+2x2 with all four outcomes). Backlog trimmed to open items (completed items live in its git
+history); Paper-2 track removed from the backlog (separate future project).
+
+**Machinery-evaluation appendix DONE (2026-07-27, Appendix C, both repos pushed):**
+- Exhibit a, nuisance diagnostics: e(W) AUC 0.567, Brier 0.0571 vs base-rate 0.0572,
+  decile calibration figure (`fig_calibration.png`); m(W) out-of-fold R2 0.151/0.169/0.023/0.011.
+- Exhibit b, insensitivity: learner swap (HGB baseline/deeper, random forest, logit+ridge)
+  moves the foul ATE only within [-0.070, -0.069]; 20-replication seed+fold spread an order
+  of magnitude below the sampling SEs; residual-balance joint F(62)=1.23, p=.11.
+- Exhibit c, timing placebos (two designs): BOTH reject zero on all four outcomes with
+  POSITIVE sign (within-half 60-75 on 45-60: fouls +21.9%***; cross-interval 45-60 on H1 30+:
+  fouls +26.6%*** — the half-time interval does not remove the selection signal). Framing in
+  Appendix C + section 6.2: placebos sign the residual selection; positive selection biases
+  the contrast toward zero, so the reported reductions are understatements (consistent with
+  raw -21% vs DML -26.5% and the Cinelli-Hazlett direction argument). OLIVER TO REVIEW this
+  framing and whether section 4.1's "as good as random" needs softening.
+- Covariate count corrected to 62 (was 61) in sections 4.1/6.2.
+- Manuscript now 30 double-spaced pages with sections 1/2/7 still to write — check whether
+  JQAS counts appendices toward the 20-30 guideline (backlog item).
+- Scripts: `src/build_placebo_timing.py`, `src/build_nuisance_eval.py`,
+  `src/build_insensitivity.py`; results in `data/placebo_timing.csv`,
+  `data/nuisance_metrics.csv`, `data/insensitivity_{learners,seeds,balance}.csv`.
+- Decided (chat, 2026-07-27): no fit statistics for the final-stage regression — it is a
+  method-of-moments step whose R2 is bounded by the effect size and would be near zero even
+  under randomization; quality is assessed via SEs, residual orthogonality, and placebos.
+
+Remaining: section 2 Related work, section 1 Introduction, section 7 Discussion, abstract +
+keywords; placebo-framing review; treatment-definition sensitivity ([15,45]); keep/drop
+decision on extended outcomes; de-identification; Chicago bib for section-2 references;
+deck sync; page-budget check.
+
 ## Status (2026-07-23, end of day)
 
 Written and pushed: Sections 3-6 complete (compiled clean), all figures/tables placed.
@@ -125,7 +160,7 @@ Remaining: Section 2 Related work, Section 1 Introduction, Section 7 Discussion,
        MLSA tex + this plan in `source_material/`.
 2. [ ] Port + rewrite section by section per the structure above (order: 3 → 5 → 6 → 4 → 2 → 1 → 7).
 3. [ ] Regenerate all figures from canonical scripts (300 dpi, separate files, sans-serif).
-4. [ ] Build T2 attrition table (small script; also closes backlog B-P2).
+4. [x] **DONE 2026-07-24:** T2 attrition table (`src/build_attrition_table.py`; closed backlog B-P2).
 5. [ ] De-identify (authors, acknowledgements, repo URL → anonymized archive link).
 6. [ ] Convert references to Chicago author-date; add Lee/Semenova/Imbens–Manski/Hudgens–Halloran.
 7. [ ] Internal pass vs the 20–30-page budget; co-author round; ScholarOne submission.
