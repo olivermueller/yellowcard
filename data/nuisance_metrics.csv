@@ -1,0 +1,8 @@
+model,metric,value
+e(W) propensity,AUC,0.5665
+e(W) propensity,Brier,0.05706
+e(W) propensity,Brier (base rate),0.05718
+m(W) def_engagement,R2 (out-of-fold),0.1505
+m(W) pressures,R2 (out-of-fold),0.1689
+m(W) tackles,R2 (out-of-fold),0.0234
+m(W) fouls,R2 (out-of-fold),0.0108

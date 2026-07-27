@@ -1,0 +1,17 @@
+learner,dv,ate,se,p
+HGB (baseline),def_engagement,-0.2152,0.0491,0.0
+HGB (baseline),pressures,-0.1416,0.0414,0.0006
+HGB (baseline),tackles,-0.0006,0.0126,0.9631
+HGB (baseline),fouls,-0.0696,0.0096,0.0
+HGB (deeper),def_engagement,-0.2179,0.0491,0.0
+HGB (deeper),pressures,-0.1384,0.0418,0.0009
+HGB (deeper),tackles,-0.0002,0.0126,0.9887
+HGB (deeper),fouls,-0.0692,0.0096,0.0
+Random forest,def_engagement,-0.2142,0.049,0.0
+Random forest,pressures,-0.1413,0.0413,0.0006
+Random forest,tackles,0.0007,0.0126,0.9568
+Random forest,fouls,-0.0695,0.0096,0.0
+Linear (logit / ridge),def_engagement,-0.2121,0.0486,0.0
+Linear (logit / ridge),pressures,-0.1395,0.0409,0.0007
+Linear (logit / ridge),tackles,-0.0026,0.0126,0.8333
+Linear (logit / ridge),fouls,-0.07,0.0096,0.0
