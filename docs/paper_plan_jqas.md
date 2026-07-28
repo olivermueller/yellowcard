@@ -107,6 +107,25 @@ F3 multi-window effect profile with bounds (new — the money figure) · F4 subg
 F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 descriptives +
 main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
+## Status (2026-07-28, evening)
+
+- **Timing-placebo analysis REMOVED from the manuscript (Oliver's decision)** after the
+  full debate cycle (raw placebos → mechanical-channel objection → card-source
+  decomposition → circularity/upper-bound caveat). §6.2 paragraph, Appendix C placebo
+  subsection, and both placebo tables cut; cross-references in §4.1 and the appendix intro
+  adjusted. The analysis remains in the yellowcard repo (`src/build_placebo_timing.py`,
+  `data/placebo_timing.csv`) for possible reviewer responses.
+- **Oliver's end-to-end read notes addressed:** pre-window selection numbers added to §5.1
+  (booked players: +12.9% pre-window defensive actions, +37.4% pre-window fouls); forwards
+  heterogeneity estimate explicitly non-significant (p=.057); overlap figure moved to
+  Appendix C; §6.2 condensed to text-only (Cinelli–Hazlett contour figure deleted from
+  manuscript AND its build code removed from `build_robustness_figures.py`); §6.3 collapsed
+  to one paragraph (numbers defer to §5.3); §6.4 opening deduplicated against §5.1.
+- Oliver's own edits: complete-seasons robustness sentence commented out in §3.1; §3.2
+  tightened.
+- **Float placement fixed:** `placeins` with section barriers; `[t]` → `[htbp]`.
+- Manuscript compiles clean at 28 double-spaced pages; §1/§2/§7 + abstract still open.
+
 ## Status (2026-07-28)
 
 - **Placebo decomposition (Oliver's objection: activity also CAUSES bookings, so zero is
