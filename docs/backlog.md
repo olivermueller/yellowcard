@@ -18,7 +18,7 @@ Completed items are removed from this list; the full record of decisions and res
 
 ## G. Manuscript production (JQAS)
 - [ ] **(P1)** **Placebo decomposition — REVIEW BY OLIVER (2026-07-28):** Oliver's objection (defensive activity also CAUSES bookings, so a future-booking placebo cannot be expected to be zero) led to a decomposition by booking reason (`src/build_placebo_timing.py`, cross-interval design, window extended to 75'): the bad-behaviour-card placebo (dissent/time-wasting; mechanical activity→booking channel OFF; 477 treated) is NULL for engagement/pressures/tackles (−1.3/−2.4/−9.8%, all p≥.19) but POSITIVE for fouls (+23.9%, p=.017); the foul-card placebo on the identical sample (2,513 treated) is positive throughout. Framing now in Appendix C + §6.2: activity-outcome identification supported (raw placebo signal = mechanical channel); foul effect carries positive disposition selection → −26.5% is conservative. §4.1 "as good as random" left unchanged. Oliver to review the rewritten Appendix C placebo subsection and §6.2 paragraph.
-- [ ] **(P2)** Page budget: manuscript now compiles at 30 double-spaced pages with §1/§2/§7 still to write — check whether JQAS counts appendices toward the 20–30 guideline; if so, appendices may need to move to supplementary material.
+- [ ] **(P2)** Page budget: manuscript now compiles at 31 double-spaced pages with §1/§2/§7 still to write — check whether JQAS counts appendices toward the 20–30 guideline; if so, appendices may need to move to supplementary material.
 - [ ] **(P2)** De-identification pass for blind review (acknowledgements, repo links, self-references).
 - [ ] **(P3)** Prepare reproducibility repo (code + StatsBomb data pointers) for JQAS submission.
 - [ ] **(P3)** Sync slide deck (`documents/slides_paper.pptx`) to the canonical Spec-B numbers.
@@ -26,8 +26,8 @@ Completed items are removed from this list; the full record of decisions and res
 
 ---
 
-### Suggested critical path (next up, status 2026-07-27)
-1. **A**: write §2 Related work, then §1 Introduction, then §7 Discussion + abstract/keywords.
-2. **G**: machinery-evaluation appendix (timing placebo first, then nuisance metrics/calibration, then insensitivity table).
+### Suggested critical path (next up, status 2026-07-28)
+1. **G**: Oliver reviews the placebo-decomposition framing (Appendix C + §6.2).
+2. **A**: write §2 Related work, then §1 Introduction, then §7 Discussion + abstract/keywords.
 3. **D**: decide keep/drop for the extended outcome set (fine-grained actions, error events, rates).
-4. **G**: de-identification pass; slide-deck sync; submission mechanics.
+4. **G**: page-budget check; de-identification pass; slide-deck sync; submission mechanics.
