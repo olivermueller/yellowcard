@@ -7,3 +7,11 @@ cross_break,def_engagement,41450,1632,3.146,0.2694,0.0629,0.0,+8.6%
 cross_break,pressures,41450,1632,2.592,0.1743,0.0514,0.0007,+6.7%
 cross_break,tackles,41450,1632,0.326,0.0331,0.0166,0.0461,+10.2%
 cross_break,fouls,41450,1632,0.228,0.0606,0.0133,0.0,+26.6%
+cross_break_dissent,def_engagement,33817,477,3.082,-0.0405,0.0995,0.684,-1.3%
+cross_break_dissent,pressures,33817,477,2.532,-0.0602,0.0856,0.4815,-2.4%
+cross_break_dissent,tackles,33817,477,0.33,-0.0324,0.025,0.1949,-9.8%
+cross_break_dissent,fouls,33817,477,0.22,0.0527,0.0221,0.0171,+23.9%
+cross_break_foul,def_engagement,35853,2513,3.082,0.2036,0.0504,0.0001,+6.6%
+cross_break_foul,pressures,35853,2513,2.532,0.1218,0.0414,0.0033,+4.8%
+cross_break_foul,tackles,35853,2513,0.33,0.0239,0.0134,0.0743,+7.2%
+cross_break_foul,fouls,35853,2513,0.22,0.0582,0.0108,0.0,+26.4%
