@@ -107,6 +107,25 @@ F3 multi-window effect profile with bounds (new — the money figure) · F4 subg
 F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 descriptives +
 main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
+## Status (2026-07-28)
+
+- **Placebo decomposition (Oliver's objection: activity also CAUSES bookings, so zero is
+  the wrong benchmark):** split by booking reason — bad-behaviour-card placebo (mechanical
+  channel off, 477 treated) NULL for engagement/pressures/tackles (all p≥.19), POSITIVE for
+  fouls (+23.9%, p=.017); foul-card placebo (2,513 treated, identical sample) positive
+  throughout. Appendix C + §6.2 rewritten: activity-outcome identification supported; foul
+  effect signed conservative. Review item for Oliver remains in the backlog.
+- **Writing style rules adopted (Oliver):** topic-sentence paragraphs (one idea each),
+  active first-person voice, past tense for data/analysis descriptions and literature
+  review, present tense for findings/implications/intro; econometrics vocabulary allowed
+  (JQAS = statistical journal). Style-conformance pass over §3–§6 + appendices DONE
+  (commit 3516506); §3.1 split into three topic-sentence paragraphs; appendix headings
+  dried ("Evaluation of the estimation procedure", "Out-of-sample nuisance diagnostics",
+  "Sensitivity to estimation choices", "Timing placebo analysis").
+- Manuscript compiles clean at 31 double-spaced pages; §1/§2/§7 + abstract still open.
+- Backlog trimmed on Oliver's instruction: treatment-definition-sensitivity item and
+  section F (publication strategy) removed.
+
 ## Status (2026-07-27)
 
 Since 2026-07-24: completeness rule implemented (full 4x5 binary-bounds table, spillover
