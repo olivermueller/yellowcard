@@ -91,36 +91,20 @@ def main():
     for k, v in pct.items():
         print(f"  {k:26s} mean {v.mean():5.1f} | median {np.median(v):5.1f} | share in top decile {100*(v>=90).mean():4.1f}%")
 
-    # ---- figure ----
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+    # ---- figure (single panel: H1 foul distribution; activity percentiles
+    # are reported in the manuscript text only) ----
+    fig, ax = plt.subplots(figsize=(6.8, 4))
     colors = {"Control survivors": BLU, "Booked, kept on": YEL, "Booked, withdrawn by 60'": RED}
-
-    ax = axes[0]
     x = np.arange(3); wdt = 0.26
     for i, (name, vals) in enumerate(tab.items()):
         ax.bar(x + (i - 1) * wdt, vals, wdt, color=colors[name], label=name, zorder=2)
     ax.set_xticks(x); ax.set_xticklabels(["0 fouls", "1 foul", "2+ fouls"])
     ax.set_ylabel("share of group (%)")
-    ax.set_title("First-half fouls committed", loc="left", fontsize=11, fontweight="bold", color=INK)
     ax.grid(axis="y", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
     for s in ["top", "right"]: ax.spines[s].set_visible(False)
     ax.legend(fontsize=8.5, frameon=False)
-
-    ax = axes[1]
-    bins = np.arange(0, 105, 10)
-    for name, v in pct.items():
-        h, edges = np.histogram(v, bins=bins)
-        ax.plot(edges[:-1] + 5, 100 * h / len(v), color=colors[name], lw=2, marker="o", ms=4, label=name, zorder=2)
-    ax.axhline(10, color="#9aa3ad", lw=1, ls="--", zorder=1)
-    ax.text(2, 10.6, "uniform reference", fontsize=8, color="#9aa3ad")
-    ax.set_xlabel("pre-window activity percentile (within position, vs control survivors)")
-    ax.set_ylabel("share of group (%)")
-    ax.set_title("Where do booked players sit in the activity distribution?",
-                 loc="left", fontsize=11, fontweight="bold", color=INK)
-    ax.grid(axis="y", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
-    for s in ["top", "right"]: ax.spines[s].set_visible(False)
     fig.tight_layout()
-    fig.savefig("fig_plausibility_withdrawn.png", dpi=200, facecolor="white")
+    fig.savefig("fig_plausibility_withdrawn.png", dpi=300, facecolor="white")
     print("\nwrote fig_plausibility_withdrawn.png")
 
 
