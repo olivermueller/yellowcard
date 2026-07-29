@@ -107,6 +107,35 @@ F3 multi-window effect profile with bounds (new — the money figure) · F4 subg
 F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 descriptives +
 main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
+## Status (2026-07-29, evening)
+
+Major restructuring round (Oliver's decisions), manuscript at 31 pp, compiles clean:
+- **Focus on significant findings:** §5.2 heterogeneity, §5.4 robustness, and the bounds
+  exhibits are RESTRICTED to the three outcomes with significant effects (defensive-actions
+  aggregate, pressures, fouls); each section opens with the focus statement and rationale;
+  null-outcome results referenced to the replication package. Appendix A (complete HTE
+  coefficient tables) CUT; §5.2 carries the three outcomes' numbers in-text; HTE code
+  restricted to the three outcomes. RECOMMENDATION on file: attach the cut tables as
+  online supplementary material at submission (uncounted, citable as Table S1) to square
+  the restriction with the completeness rule.
+- **§6 folded into §5** as subsection 5.4 "Assumption tests and robustness checks"
+  (positivity/sensitivity/interference/selection now subsubsections); Discussion is §6;
+  classic 6-section structure. Labels kept, refs resolve.
+- **Bounds prominence swapped:** new binarized-bounds figure (estimates + identification
+  bands + IM whiskers, `src/build_bounds_binary_figure.py`) is the §5.4.4 exhibit; the
+  count-bounds figure moved to an appendix (wide-by-construction explanation); both now
+  1x3 panels. Plain outcome labels (no P(any foul) notation) — the at-least-one-action
+  reading lives in captions.
+- **§4.3 carries the accessible Lee-bounds exposition** (two sieves, unseen labels,
+  count-how-many trick, worst-case deletion, count-width arithmetic).
+- **§5.1 rewritten around the raw foul sign reversal** (pre-window +37.4% vs post −21%;
+  selection favours the opposite sign → raw diff understates the causal reduction);
+  Table 3 split into raw-means-with-tests + DML tables.
+- **Full 8-outcome sweep** ran through every analysis before the restriction; all CSVs in
+  the repo carry the complete set (supplementary-material source). New spillover finding
+  reported in §5.3: teammate ball recoveries +3.6% (p=.002).
+- All tables fit page margins (zero overfull boxes).
+
 ## Status (2026-07-28, evening)
 
 - **Timing-placebo analysis REMOVED from the manuscript (Oliver's decision)** after the
