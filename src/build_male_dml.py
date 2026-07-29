@@ -30,7 +30,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analysis_config import build_W_Z
 
 DVS = {"post_n_def_actions": "def_actions", "post_n_pressure": "pressures",
-       "post_n_tackle": "tackles", "post_n_foul_committed": "fouls"}
+       "post_n_tackle": "tackles", "post_n_foul_committed": "fouls",
+       "post_n_ball_recovery": "ball_recoveries", "post_n_clearance": "clearances",
+       "post_n_block": "blocks", "post_n_interception": "interceptions"}
 # defensive actions = pressures + tackles + fouls (frame aggregate
 # post_n_def_events) + ball recoveries + clearances + blocks +
 # interceptions (merged from events in load()); decided 2026-07-29.

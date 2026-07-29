@@ -32,12 +32,8 @@ OUT_TYPES = {"post_n_pressure": "pressure", "post_n_tackle": "tackle",
              "post_n_ball_recovery": "ball_recovery", "post_n_clearance": "clearance",
              "post_n_block": "block", "post_n_interception": "interception"}
 DEF_TYPES = OUT_TYPES
-# per-window outcome set mirrors the primary analysis: aggregate + all components
-MW_DVS = {"post_n_def_actions": "def_actions",
-          "post_n_pressure": "pressures", "post_n_tackle": "tackles",
-          "post_n_foul_committed": "fouls",
-          "post_n_ball_recovery": "ball_recoveries", "post_n_clearance": "clearances",
-          "post_n_block": "blocks", "post_n_interception": "interceptions"}
+# per-window outcome set mirrors the primary analysis exactly
+MW_DVS = dict(DVS)
 
 
 def tname(t, dt):

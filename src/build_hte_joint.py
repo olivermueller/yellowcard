@@ -87,7 +87,7 @@ def main():
     names = list(X.columns)
 
     coef_rows, block_rows, pos_rows = [], [], []
-    for dv in ["post_n_foul_committed", "post_n_def_actions", "post_n_pressure", "post_n_tackle"]:
+    for dv in DVS:
         lab = DVS[dv]
         fit = sm.OLS(Y_res[dv], feats).fit(cov_type="cluster", cov_kwds={"groups": groups})
         b = np.asarray(fit.params); V = np.asarray(fit.cov_params())
