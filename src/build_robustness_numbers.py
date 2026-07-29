@@ -58,10 +58,23 @@ def main():
     rv05 = 0.5 * (np.sqrt(f2q ** 2 + 4 * f2q) - f2q) if fq > 0 else 0.0
     print(f"\nCinelli-Hazlett: RV(estimate=0) {100*rv:.2f}% | RV(p=.05) {100*rv05:.2f}%")
 
-    # benchmark: position dummies' partial R2 with outcome and treatment residuals
+    # benchmark: leave position out of W, refit nuisances, then partial R2 of
+    # the position dummies with the leave-out residuals (Cinelli-Hazlett
+    # observed-covariate benchmarking)
+    W2 = W.loc[:, [c for c in W.columns if not c.startswith("position_group")]]
+    from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
+    from sklearn.model_selection import GroupKFold, cross_val_predict
+    from build_male_dml import HGB
+    cv = GroupKFold(5)
+    t = df.treat_yellow_card.astype(int).values
+    e2 = cross_val_predict(HistGradientBoostingClassifier(**HGB), W2, t,
+                           cv=cv, groups=groups, method="predict_proba")[:, 1]
+    y = df[DV].values.astype(float)
+    m2 = cross_val_predict(HistGradientBoostingRegressor(**HGB), W2, y,
+                           cv=cv, groups=groups)
     pos = pd.get_dummies(df.position_group, drop_first=True, dtype=float).values
-    r2y = sm.OLS(Y_res[DV], sm.add_constant(pos)).fit().rsquared
-    r2t = sm.OLS(T_res, sm.add_constant(pos)).fit().rsquared
+    r2y = sm.OLS(y - m2, sm.add_constant(pos)).fit().rsquared
+    r2t = sm.OLS(t - e2, sm.add_constant(pos)).fit().rsquared
     print(f"benchmark (position): partial R2 outcome {100*r2y:.2f}% | treatment {100*r2t:.3f}%")
     rows.append(dict(check="CH", band="RV_zero", n=len(df), ate=round(100*rv, 2)))
     rows.append(dict(check="CH", band="RV_p05", n=len(df), ate=round(100*rv05, 2)))
