@@ -30,7 +30,7 @@ import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_male_dml import DVS, CARD, build_W, crossfit, ate
-from build_multiwindow import (OUT_TYPES, load_all, exits, bookings, build_extras,
+from build_multiwindow import (DEF_TYPES, OUT_TYPES, load_all, exits, bookings, build_extras,
                                window_counts)
 
 
@@ -82,7 +82,7 @@ def attach_outcomes(d, counts):
         d[t] = d[t].fillna(0) if t in d.columns else 0.0
     for col, t in OUT_TYPES.items():
         d[col] = d[t]
-    d["post_n_def_actions"] = sum(d[t] for t in OUT_TYPES.values())
+    d["post_n_def_actions"] = sum(d[t] for t in DEF_TYPES.values())
     return d.dropna(subset=["age"]).reset_index(drop=True)
 
 

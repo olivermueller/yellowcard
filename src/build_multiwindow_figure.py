@@ -25,12 +25,13 @@ def main():
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
     xs = np.arange(len(wins))
 
-    fig, axes = plt.subplots(2, 2, figsize=(11, 7.6), sharex=True)
+    panels = [("def_actions", "Defensive actions (aggregate)"),
+              ("fouls", "Fouls"), ("pressures", "Pressures"), ("tackles", "Tackles"),
+              ("ball_recoveries", "Ball recoveries"), ("clearances", "Clearances"),
+              ("blocks", "Blocks"), ("interceptions", "Interceptions")]
+    fig, axes = plt.subplots(4, 2, figsize=(11, 13.5), sharex=True)
     axes = axes.ravel()
-    for ax, dv, ttl in [(axes[0], "fouls", "Fouls"),
-                        (axes[1], "def_actions", "Defensive actions"),
-                        (axes[2], "pressures", "Pressures"),
-                        (axes[3], "tackles", "Tackles")]:
+    for ax, (dv, ttl) in zip(axes, panels):
         m = mw[mw.dv == dv].set_index("window")
         est = [100 * m.loc[w, "ate"] / m.loc[w, "control_mean"] for w in wins]
         ci = [196 * m.loc[w, "se"] / m.loc[w, "control_mean"] for w in wins]
@@ -42,7 +43,7 @@ def main():
         ax.set_title(ttl, loc="left", fontsize=11, fontweight="bold", color=INK)
         ax.grid(axis="y", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
         for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
-    for i in (0, 2):
+    for i in (0, 2, 4, 6):
         axes[i].set_ylabel("effect relative to control mean (%)")
     axes[0].legend(fontsize=8.5, frameon=False, loc="lower left")
     fig.tight_layout()

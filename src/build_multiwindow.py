@@ -31,6 +31,13 @@ OUT_TYPES = {"post_n_pressure": "pressure", "post_n_tackle": "tackle",
              "post_n_foul_committed": "foul_committed",
              "post_n_ball_recovery": "ball_recovery", "post_n_clearance": "clearance",
              "post_n_block": "block", "post_n_interception": "interception"}
+DEF_TYPES = OUT_TYPES
+# per-window outcome set mirrors the primary analysis: aggregate + all components
+MW_DVS = {"post_n_def_actions": "def_actions",
+          "post_n_pressure": "pressures", "post_n_tackle": "tackles",
+          "post_n_foul_committed": "fouls",
+          "post_n_ball_recovery": "ball_recoveries", "post_n_clearance": "clearances",
+          "post_n_block": "blocks", "post_n_interception": "interceptions"}
 
 
 def tname(t, dt):
@@ -151,18 +158,28 @@ def assemble(frame, extras, counts, treat_lo, treat_hi, book, drop_booked_outsid
         d[t] = d[t].fillna(0) if t in d.columns else 0.0
     for col, t in OUT_TYPES.items():
         d[col] = d[t]
-    d["post_n_def_actions"] = sum(d[t] for t in OUT_TYPES.values())
+    d["post_n_def_actions"] = sum(d[t] for t in DEF_TYPES.values())
     d = d.dropna(subset=["age"]).reset_index(drop=True)
     return d
 
 
 def run_window(name, d):
+    from sklearn.ensemble import (HistGradientBoostingClassifier,
+                                  HistGradientBoostingRegressor)
+    from sklearn.model_selection import GroupKFold, cross_val_predict
     W = build_W(d)
-    T_res, Y_res, _ = crossfit(d, W)
-    out = []
     t = d.treat_yellow_card.values
-    for dv, lab in DVS.items():
-        est, se, p = ate(T_res, Y_res[dv], d.match_id.values)
+    groups = d.match_id.values
+    cv = GroupKFold(5)
+    e = cross_val_predict(HistGradientBoostingClassifier(**HGB), W, t.astype(int),
+                          cv=cv, groups=groups, method="predict_proba")[:, 1]
+    T_res = t - e
+    out = []
+    for dv, lab in MW_DVS.items():
+        y = d[dv].values.astype(float)
+        m = cross_val_predict(HistGradientBoostingRegressor(**HGB), W, y,
+                              cv=cv, groups=groups)
+        est, se, p = ate(T_res, y - m, groups)
         cm = d.loc[t == 0, dv].mean()
         out.append(dict(window=name, dv=lab, n=len(d), treated=int(t.sum()),
                         control_mean=round(cm, 3), ate=round(est, 4), se=round(se, 4),
@@ -193,7 +210,7 @@ def main():
         print(f"[45-{b}] n={len(d):,} (frame {len(f):,} + extras {len(d)-len(f):,} after age-drop) "
               f"treated={int(d.treat_yellow_card.sum()):,}", flush=True)
         results += run_window(f"45-{b}", d)
-        print(pd.DataFrame(results[-4:]).to_string(index=False), flush=True)
+        print(pd.DataFrame(results[-8:]).to_string(index=False), flush=True)
 
     res = pd.DataFrame(results)
     res.to_csv("data/multiwindow_results.csv", index=False)
