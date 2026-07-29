@@ -24,7 +24,9 @@ import build_multiwindow as mw
 WINDOWS = [50, 60, 70, 80, 90]
 N_ACT = 3
 BDVS = {"any_def_action": "post_n_def_actions", "any_pressure": "post_n_pressure",
-        "any_tackle": "post_n_tackle", "any_foul": "post_n_foul_committed"}
+        "any_tackle": "post_n_tackle", "any_foul": "post_n_foul_committed",
+        "any_recovery": "post_n_ball_recovery", "any_clearance": "post_n_clearance",
+        "any_block": "post_n_block", "any_interception": "post_n_interception"}
 
 
 def crossfit_bin(d, W, ycols):

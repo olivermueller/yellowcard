@@ -6,3 +6,7 @@ m(W) def_actions,R2 (out-of-fold),0.1187
 m(W) pressures,R2 (out-of-fold),0.1689
 m(W) tackles,R2 (out-of-fold),0.0234
 m(W) fouls,R2 (out-of-fold),0.0108
+m(W) ball_recoveries,R2 (out-of-fold),0.0291
+m(W) clearances,R2 (out-of-fold),0.1515
+m(W) blocks,R2 (out-of-fold),0.0081
+m(W) interceptions,R2 (out-of-fold),0.0253

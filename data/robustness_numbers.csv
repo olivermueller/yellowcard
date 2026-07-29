@@ -6,5 +6,5 @@ trim,"[0.02,0.98]",43439,-0.2193
 trim,"[0.05,0.95]",30636,-0.2308
 CH,RV_zero,43527,1.81
 CH,RV_p05,43527,0.88
-CH,bench_pos_r2y_pct,43527,0.0
-CH,bench_pos_r2t_pct,43527,0.016
+CH,bench_pos_r2y_pct,43527,2.05
+CH,bench_pos_r2t_pct,43527,0.088

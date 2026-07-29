@@ -24,7 +24,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analysis_config import build_W_Z
 from build_male_dml import HGB
 
-DVS = ["post_n_def_actions", "post_n_pressure", "post_n_tackle", "post_n_foul_committed"]
+from build_male_dml import DVS as _DVS
+DVS = list(_DVS)
 
 
 def main():
