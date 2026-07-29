@@ -21,11 +21,11 @@ def main():
     bd = pd.read_csv("data/lee_bounds_windows.csv")
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
     xs = np.arange(len(wins))
+    # restricted to the outcomes with significant Section-5 effects;
+    # bounds for the null outcomes remain in data/lee_bounds_windows.csv
     panels = [("def_actions", "Defensive actions (aggregate)"),
-              ("fouls", "Fouls"), ("pressures", "Pressures"), ("tackles", "Tackles"),
-              ("ball_recoveries", "Ball recoveries"), ("clearances", "Clearances"),
-              ("blocks", "Blocks"), ("interceptions", "Interceptions")]
-    fig, axes = plt.subplots(4, 2, figsize=(11, 13.5), sharex=True)
+              ("pressures", "Pressures"), ("fouls", "Fouls")]
+    fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.2), sharex=True)
     axes = axes.ravel()
     for ax, (dv, ttl) in zip(axes, panels):
         m = mw[mw.dv == dv].set_index("window")
@@ -44,8 +44,7 @@ def main():
         ax.set_title(ttl, loc="left", fontsize=11, fontweight="bold", color=INK)
         ax.grid(axis="y", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
         for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
-    for i in (0, 2, 4, 6):
-        axes[i].set_ylabel("effect relative to control mean (%)")
+    axes[0].set_ylabel("effect relative to control mean (%)")
     axes[0].legend(fontsize=8.5, frameon=False, loc="lower left")
     fig.tight_layout()
     fig.savefig("fig_bounds.png", dpi=300, facecolor="white")
