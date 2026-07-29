@@ -87,7 +87,7 @@ def main():
     names = list(X.columns)
 
     coef_rows, block_rows, pos_rows = [], [], []
-    for dv in ["post_n_foul_committed", "post_n_def_events", "post_n_pressure", "post_n_tackle"]:
+    for dv in ["post_n_foul_committed", "post_n_def_actions", "post_n_pressure", "post_n_tackle"]:
         lab = DVS[dv]
         fit = sm.OLS(Y_res[dv], feats).fit(cov_type="cluster", cov_kwds={"groups": groups})
         b = np.asarray(fit.params); V = np.asarray(fit.cov_params())
@@ -137,7 +137,7 @@ def main():
     print(cr[cr.dv == "fouls"].to_string(index=False))
     print("\n=== implied per-position effects (other Z at means) ===")
     pr = pd.DataFrame(pos_rows)
-    print(pr[pr.dv.isin(["fouls", "def_engagement"])].to_string(index=False))
+    print(pr[pr.dv.isin(["fouls", "def_actions"])].to_string(index=False))
     print("\nwrote data/hte_joint_{coefs,blocks,pos5}.csv")
 
 

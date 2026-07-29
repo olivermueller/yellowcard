@@ -29,8 +29,13 @@ from sklearn.model_selection import GroupKFold, cross_val_predict
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analysis_config import build_W_Z
 
-DVS = {"post_n_def_events": "def_engagement", "post_n_pressure": "pressures",
+DVS = {"post_n_def_actions": "def_actions", "post_n_pressure": "pressures",
        "post_n_tackle": "tackles", "post_n_foul_committed": "fouls"}
+# defensive actions = pressures + tackles + fouls (frame aggregate
+# post_n_def_events) + ball recoveries + clearances + blocks +
+# interceptions (merged from events in load()); decided 2026-07-29.
+NEW_POST = {"Ball Recovery": "ball_recovery", "Clearance": "clearance",
+            "Block": "block", "Interception": "interception"}
 HGB = dict(max_iter=400, learning_rate=0.05, min_samples_leaf=200, random_state=0)
 CARD = ["foul_committed_card", "bad_behaviour_card"]
 
@@ -56,6 +61,21 @@ def load():
                                 1 - df.odds_p_home - df.odds_p_draw)
     print(f"SPEC-B sample: {len(df):,} rows ({n0-len(df):,} dropped: missing age/odds) | "
           f"treated {int(df.treat_yellow_card.sum()):,}")
+    ev = pd.read_parquet("data/events.parquet",
+        columns=["match_id", "player_id", "period", "minute", "type"],
+        filters=[("match_id", "in", df.match_id.unique().tolist())])
+    ev = ev[(ev.period == 2) & (ev.minute >= 45) & (ev.minute <= 60)
+            & ev.type.isin(NEW_POST)]
+    c = (ev.assign(tn=ev.type.map(NEW_POST))
+           .groupby(["match_id", "player_id", "tn"]).size().unstack(fill_value=0)
+           .reindex(columns=list(NEW_POST.values()), fill_value=0).reset_index())
+    df = df.merge(c, on=["match_id", "player_id"], how="left")
+    for t in NEW_POST.values():
+        df[f"post_n_{t}"] = df[t].fillna(0) if t in df.columns else 0.0
+    df = df.drop(columns=[t for t in NEW_POST.values() if t in df.columns])
+    df["post_n_def_actions"] = (df.post_n_def_events + df.post_n_ball_recovery
+                                + df.post_n_clearance + df.post_n_block
+                                + df.post_n_interception)
     return df
 
 
@@ -184,7 +204,7 @@ def main():
             "game_state": gs, "format": df.competition_format.values, "age": age_t.values}
     mods = {k: v for k, v in mods.items() if pd.Series(v).nunique() > 1}   # constant in Spec B -> skip
     sub_rows = []
-    for dv in ["post_n_foul_committed", "post_n_def_events"]:
+    for dv in ["post_n_foul_committed", "post_n_def_actions"]:
         joint_ps = {}
         for mname, lv in mods.items():
             res, jp = subgroup(df, T_res, Y_res[dv], lv, groups)

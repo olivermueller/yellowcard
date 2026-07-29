@@ -23,7 +23,7 @@ import build_multiwindow as mw
 
 WINDOWS = [50, 60, 70, 80, 90]
 N_ACT = 3
-BDVS = {"any_def_action": "post_n_def_events", "any_pressure": "post_n_pressure",
+BDVS = {"any_def_action": "post_n_def_actions", "any_pressure": "post_n_pressure",
         "any_tackle": "post_n_tackle", "any_foul": "post_n_foul_committed"}
 
 

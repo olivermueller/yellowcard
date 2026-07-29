@@ -28,7 +28,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_male_dml import DVS, CARD, HGB, build_W, crossfit, ate
 
 OUT_TYPES = {"post_n_pressure": "pressure", "post_n_tackle": "tackle",
-             "post_n_foul_committed": "foul_committed"}
+             "post_n_foul_committed": "foul_committed",
+             "post_n_ball_recovery": "ball_recovery", "post_n_clearance": "clearance",
+             "post_n_block": "block", "post_n_interception": "interception"}
 
 
 def tname(t, dt):
@@ -149,7 +151,7 @@ def assemble(frame, extras, counts, treat_lo, treat_hi, book, drop_booked_outsid
         d[t] = d[t].fillna(0) if t in d.columns else 0.0
     for col, t in OUT_TYPES.items():
         d[col] = d[t]
-    d["post_n_def_events"] = sum(d[t] for t in OUT_TYPES.values())
+    d["post_n_def_actions"] = sum(d[t] for t in OUT_TYPES.values())
     d = d.dropna(subset=["age"]).reset_index(drop=True)
     return d
 
@@ -195,8 +197,8 @@ def main():
 
     res = pd.DataFrame(results)
     res.to_csv("data/multiwindow_results.csv", index=False)
-    print("\n=== summary (fouls + def_engagement across windows) ===")
-    print(res[res.dv.isin(["fouls", "def_engagement"])]
+    print("\n=== summary (fouls + def_actions across windows) ===")
+    print(res[res.dv.isin(["fouls", "def_actions"])]
           .pivot(index="window", columns="dv", values=["ate", "p", "rel"]).to_string())
     print("\nwrote data/multiwindow_results.csv")
 

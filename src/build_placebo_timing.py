@@ -82,7 +82,7 @@ def attach_outcomes(d, counts):
         d[t] = d[t].fillna(0) if t in d.columns else 0.0
     for col, t in OUT_TYPES.items():
         d[col] = d[t]
-    d["post_n_def_events"] = sum(d[t] for t in OUT_TYPES.values())
+    d["post_n_def_actions"] = sum(d[t] for t in OUT_TYPES.values())
     return d.dropna(subset=["age"]).reset_index(drop=True)
 
 

@@ -24,7 +24,7 @@ def main():
     fig, axes = plt.subplots(2, 2, figsize=(11, 7.6), sharex=True)
     axes = axes.ravel()
     for ax, dv, ttl in [(axes[0], "fouls", "Fouls"),
-                        (axes[1], "def_engagement", "Defensive engagement"),
+                        (axes[1], "def_actions", "Defensive actions"),
                         (axes[2], "pressures", "Pressures"),
                         (axes[3], "tackles", "Tackles")]:
         m = mw[mw.dv == dv].set_index("window")
