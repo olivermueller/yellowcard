@@ -3,7 +3,7 @@
 Family 1, defensive actions: pressures, tackles, fouls committed (paper
 set) plus ball recoveries, clearances, blocks, interceptions, and the
 7-component aggregate.
-Family 2, adverse individual outcomes: miscontrols, dispossessions,
+Family 2, adverse events: miscontrols, dispossessions,
 times dribbled past, and the 3-component aggregate.
 
 Sample and estimation identical to the main analysis (Spec-B frame,
@@ -46,7 +46,7 @@ def main():
     for t in FAM1 + FAM2:
         df[t] = df[t].fillna(0)
     df["defensive_actions"] = df[FAM1].sum(axis=1)
-    df["adverse_outcomes"] = df[FAM2].sum(axis=1)
+    df["adverse_events"] = df[FAM2].sum(axis=1)
 
     # validation against the paper counts
     for new, old in [("pressure", "post_n_pressure"), ("tackle", "post_n_tackle"),
@@ -70,7 +70,7 @@ def main():
     rows = []
     dvs = ([("defensive_actions", "1 defensive actions (aggregate, 7 components)")]
            + [(k, f"1 {k}") for k in FAM1]
-           + [("adverse_outcomes", "2 adverse outcomes (aggregate, 3 components)")]
+           + [("adverse_events", "2 adverse events (aggregate, 3 components)")]
            + [(k, f"2 {k}") for k in FAM2])
     for dv, lab in dvs:
         y = df[dv].values.astype(float)
