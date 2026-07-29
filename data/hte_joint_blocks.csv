@@ -4,11 +4,11 @@ fouls,game_state,0.0015,0.0035
 fouls,age,0.8358,0.8358
 fouls,odds,0.2407,0.3209
 fouls,OVERALL_heterogeneity,0.0005,
-def_engagement,position,0.2336,0.4672
-def_engagement,game_state,0.2189,0.4672
-def_engagement,age,0.7651,0.7651
-def_engagement,odds,0.672,0.7651
-def_engagement,OVERALL_heterogeneity,0.5268,
+def_actions,position,0.5591,0.9246
+def_actions,game_state,0.0887,0.3549
+def_actions,age,0.9246,0.9246
+def_actions,odds,0.9045,0.9246
+def_actions,OVERALL_heterogeneity,0.5592,
 pressures,position,0.2954,0.5908
 pressures,game_state,0.2264,0.5908
 pressures,age,0.5644,0.7525
