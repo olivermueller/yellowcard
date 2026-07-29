@@ -17,7 +17,7 @@ Completed items are removed from this list; the full record of decisions and res
 - [ ] **(P2)** Add **rate-based targets** (e.g., duel/tackle win rate) alongside raw counts. *Status: not in the current manuscript; decide keep/drop.*
 
 ## G. Manuscript production (JQAS)
-- [ ] **(P2)** Page budget: manuscript now compiles at 27 double-spaced pages with §1/§2/§7 still to write — check whether JQAS counts appendices toward the 20–30 guideline; if so, appendices may need to move to supplementary material.
+- [ ] **(P2)** Page budget — CHECKED (2026-07-29, local guideline PDFs + current degruyterbrill.com instructions, last update 2025-03-03): the only length statement is "Typical JQAS manuscripts are 20–30 pages long. Longer papers are discouraged" (soft guideline, in the manuscript-preparation PDF; the current Instructions for Authors state NO page/word limit; abstract max 250 words). Appendices sit inside the manuscript before the references; no counting rule stated — safest reading: they count. Supplementary material is explicitly supported: online-only, separate files ≤10 MB, not typeset, cited as "Figure S1/Table S1"; it does NOT count toward the article PDF. Decision for Oliver: manuscript is 28 pp with §1/§2/§7 still to write (~7–9 pp) → likely ~35 pp total; move Appendices A–C (or a subset) to supplementary material to land near 30.
 - [ ] **(P2)** De-identification pass for blind review (acknowledgements, repo links, self-references).
 - [ ] **(P3)** Prepare reproducibility repo (code + StatsBomb data pointers) for JQAS submission.
 - [ ] **(P3)** Sync slide deck (`documents/slides_paper.pptx`) to the canonical Spec-B numbers.
