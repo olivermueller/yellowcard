@@ -1,11 +1,11 @@
-"""Multi-window effect profile (paper F3, 'money figure').
+"""Multi-window effect profile (paper Figure 3).
 
-Relative DML effects on fouls and defensive engagement across the H2
-outcome windows 45-50/60/70/80 (points, 95% cluster-robust CIs). Lee
-bounds appear separately in the Section-6 figure (build_bounds_figure). 30-45
-within-half placebo (treatment 15-30) as a separated open marker.
+Relative DML effects on the defensive-actions aggregate and all
+components across the H2 outcome windows (points, 95% cluster-robust
+CIs). Marker convention mirrors the heterogeneity figure: filled =
+significant at the 5% level, open = not.
 
-Inputs: data/multiwindow_results.csv, data/lee_bounds_windows_im.csv.
+Input:  data/multiwindow_results.csv
 Output: fig_multiwindow.png (300 dpi).
 """
 import warnings; warnings.filterwarnings("ignore")
@@ -33,10 +33,15 @@ def main():
     axes = axes.ravel()
     for ax, (dv, ttl) in zip(axes, panels):
         m = mw[mw.dv == dv].set_index("window")
-        est = [100 * m.loc[w, "ate"] / m.loc[w, "control_mean"] for w in wins]
-        ci = [196 * m.loc[w, "se"] / m.loc[w, "control_mean"] for w in wins]
-        ax.errorbar(xs, est, yerr=ci, fmt="o", color=BLU, ms=6, capsize=4,
-                    elinewidth=1.6, zorder=3, label="DML estimate (95% CI)")
+        est = np.array([100 * m.loc[w, "ate"] / m.loc[w, "control_mean"] for w in wins])
+        ci = np.array([196 * m.loc[w, "se"] / m.loc[w, "control_mean"] for w in wins])
+        sig = np.array([m.loc[w, "p"] < .05 for w in wins])
+        ax.errorbar(xs, est, yerr=ci, fmt="none", ecolor=BLU, capsize=4,
+                    elinewidth=1.6, zorder=2)
+        ax.plot(xs[sig], est[sig], "o", color=BLU, ms=7, zorder=3,
+                label="significant at 5%")
+        ax.plot(xs[~sig], est[~sig], "o", mfc="white", mec=BLU, mew=1.6, ms=7,
+                zorder=3, label="not significant")
         ax.axhline(0, color="#444", lw=1, zorder=2)
         ax.set_xticks(xs)
         ax.set_xticklabels([w.replace("-", "–") + "′" for w in wins], fontsize=9)
@@ -45,7 +50,13 @@ def main():
         for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
     for i in (0, 2, 4, 6):
         axes[i].set_ylabel("effect relative to control mean (%)")
-    axes[0].legend(fontsize=8.5, frameon=False, loc="lower left")
+    from matplotlib.lines import Line2D
+    handles = [Line2D([], [], marker="o", ls="none", color=BLU, ms=7,
+                      label="significant at the 5% level"),
+               Line2D([], [], marker="o", ls="none", mfc="white", mec=BLU, mew=1.6,
+                      ms=7, label="not significant"),
+               Line2D([], [], color=BLU, lw=1.6, label="95% CI")]
+    axes[0].legend(handles=handles, fontsize=8.5, frameon=False, loc="lower left")
     fig.tight_layout()
     fig.savefig("fig_multiwindow.png", dpi=300, facecolor="white")
     print("wrote fig_multiwindow.png")
