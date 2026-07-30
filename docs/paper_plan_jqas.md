@@ -107,6 +107,23 @@ F3 multi-window effect profile with bounds (new — the money figure) · F4 subg
 F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 descriptives +
 main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
+## Status (2026-07-30)
+
+Polish round on Oliver's read (all pushed, manuscript d704b75, 30 pp, clean compile):
+- Oliver's Overleaf edits pulled (§3 restructured: selection paragraph folded into §3.2,
+  old §3.5 deleted; subsection retitles; §4.3 opening reworded to "latent groups");
+  3 dangling refs to sec:data:selection retargeted; one grammar slip fixed.
+- **Salience:** significant estimates BOLD in Tables 3–6 (criterion noted per caption:
+  5%-level for Tables 3–5; IM interval excluding zero for Table 6). Figure 3 markers now
+  mirror Figure 4's convention (filled = significant at 5%, open = not; legend above the
+  panels after an overlap fix).
+- **Table 6 headers:** "DML estimate | Identification bounds (Lee) | 95% CI
+  (Imbens–Manski)"; caption explains that each IM interval contains its bounds
+  (single CI for the partially identified effect, one-sided extensions, c≈1.645);
+  table in footnotesize.
+- Lee-bounds intuition also delivered to Oliver in chat (two sieves / count-how-many /
+  worst-case deletion / count-width arithmetic) and woven into §4.3.
+
 ## Status (2026-07-29, evening)
 
 Major restructuring round (Oliver's decisions), manuscript at 31 pp, compiles clean:
