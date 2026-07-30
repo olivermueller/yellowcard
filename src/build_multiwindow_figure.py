@@ -56,8 +56,9 @@ def main():
                Line2D([], [], marker="o", ls="none", mfc="white", mec=BLU, mew=1.6,
                       ms=7, label="not significant"),
                Line2D([], [], color=BLU, lw=1.6, label="95% CI")]
-    axes[0].legend(handles=handles, fontsize=8.5, frameon=False, loc="lower left")
-    fig.tight_layout()
+    fig.legend(handles=handles, fontsize=9.5, frameon=False, ncol=3,
+               loc="upper center", bbox_to_anchor=(0.5, 0.995))
+    fig.tight_layout(rect=(0, 0, 1, 0.975))
     fig.savefig("fig_multiwindow.png", dpi=300, facecolor="white")
     print("wrote fig_multiwindow.png")
 
