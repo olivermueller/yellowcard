@@ -1,8 +1,9 @@
 dv,control_mean,ate,se,p,rel
-post_n_def_actions,5.229,-0.2168,0.0647,0.0008,-4.1%
+post_n_opp_directed,3.451,-0.2133,0.0535,0.0001,-6.2%
 post_n_pressure,2.854,-0.1642,0.047,0.0005,-5.8%
 post_n_tackle,0.344,0.001,0.0125,0.9352,+0.3%
 post_n_foul_committed,0.254,-0.0586,0.0094,0.0,-23.1%
+post_n_ball_directed,1.778,-0.0068,0.0294,0.8179,-0.4%
 post_n_ball_recovery,0.831,0.0106,0.0189,0.5753,+1.3%
 post_n_clearance,0.402,-0.0162,0.0147,0.2709,-4.0%
 post_n_block,0.338,-0.0188,0.0117,0.1088,-5.6%

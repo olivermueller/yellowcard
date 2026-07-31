@@ -1,9 +1,9 @@
 dv,pos5,theta,se,p,control_mean,rel
-def_actions,CentralDef,-0.2497,0.1046,0.017,4.5,-5.5%
-def_actions,WideDef,-0.2549,0.1265,0.0439,5.227,-4.9%
-def_actions,DefMid,-0.3538,0.1151,0.0021,6.542,-5.4%
-def_actions,OffMid,-0.0665,0.2426,0.784,5.618,-1.2%
-def_actions,Forward,-0.0811,0.1326,0.5407,4.581,-1.8%
+opp_directed,CentralDef,-0.1891,0.0794,0.0172,2.301,-8.2%
+opp_directed,WideDef,-0.2814,0.103,0.0063,3.256,-8.6%
+opp_directed,DefMid,-0.3388,0.0994,0.0007,4.619,-7.3%
+opp_directed,OffMid,0.0375,0.2136,0.8606,4.078,+0.9%
+opp_directed,Forward,-0.0544,0.1135,0.6315,3.407,-1.6%
 pressures,CentralDef,-0.1147,0.063,0.0688,1.777,-6.5%
 pressures,WideDef,-0.2229,0.0829,0.0072,2.586,-8.6%
 pressures,DefMid,-0.2258,0.0847,0.0077,3.829,-5.9%

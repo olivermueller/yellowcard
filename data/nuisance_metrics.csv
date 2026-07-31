@@ -2,10 +2,11 @@ model,metric,value
 e(W) propensity,AUC,0.5665
 e(W) propensity,Brier,0.05706
 e(W) propensity,Brier (base rate),0.05718
-m(W) def_actions,R2 (out-of-fold),0.1187
+m(W) opp_directed,R2 (out-of-fold),0.1505
 m(W) pressures,R2 (out-of-fold),0.1689
 m(W) tackles,R2 (out-of-fold),0.0234
 m(W) fouls,R2 (out-of-fold),0.0108
+m(W) ball_directed,R2 (out-of-fold),0.0736
 m(W) ball_recoveries,R2 (out-of-fold),0.0291
 m(W) clearances,R2 (out-of-fold),0.1515
 m(W) blocks,R2 (out-of-fold),0.0081
