@@ -15,8 +15,9 @@ import statsmodels.api as sm
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_male_dml import load
 
-COLS = [("post_n_def_actions", "def_actions"), ("post_n_pressure", "pressures"),
+COLS = [("post_n_opp_directed", "opp_directed"), ("post_n_pressure", "pressures"),
         ("post_n_tackle", "tackles"), ("post_n_foul_committed", "fouls"),
+        ("post_n_ball_directed", "ball_directed"),
         ("post_n_ball_recovery", "ball_recoveries"), ("post_n_clearance", "clearances"),
         ("post_n_block", "blocks"), ("post_n_interception", "interceptions")]
 
