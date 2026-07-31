@@ -208,7 +208,7 @@ def main():
             "game_state": gs, "format": df.competition_format.values, "age": age_t.values}
     mods = {k: v for k, v in mods.items() if pd.Series(v).nunique() > 1}   # constant in Spec B -> skip
     sub_rows = []
-    for dv in ["post_n_foul_committed", "post_n_def_actions"]:
+    for dv in ["post_n_foul_committed", "post_n_opp_directed"]:
         joint_ps = {}
         for mname, lv in mods.items():
             res, jp = subgroup(df, T_res, Y_res[dv], lv, groups)
