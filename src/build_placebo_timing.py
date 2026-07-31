@@ -82,7 +82,8 @@ def attach_outcomes(d, counts):
         d[t] = d[t].fillna(0) if t in d.columns else 0.0
     for col, t in OUT_TYPES.items():
         d[col] = d[t]
-    d["post_n_def_actions"] = sum(d[t] for t in DEF_TYPES.values())
+    d["post_n_opp_directed"] = d.pressure + d.tackle + d.foul_committed
+    d["post_n_ball_directed"] = d.ball_recovery + d.clearance + d.block + d.interception
     return d.dropna(subset=["age"]).reset_index(drop=True)
 
 

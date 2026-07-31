@@ -23,7 +23,7 @@ def main():
     xs = np.arange(len(wins))
     # restricted to the outcomes with significant Section-5 effects;
     # bounds for the null outcomes remain in data/lee_bounds_windows.csv
-    panels = [("def_actions", "Defensive actions (aggregate)"),
+    panels = [("opp_directed", "Opponent-directed (aggregate)"),
               ("pressures", "Pressures"), ("fouls", "Fouls")]
     fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.2), sharex=True)
     axes = axes.ravel()

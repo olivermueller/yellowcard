@@ -18,7 +18,7 @@ import statsmodels.api as sm
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_male_dml import ate, build_W, crossfit, load
 
-DV = "post_n_def_actions"
+DV = "post_n_opp_directed"
 
 
 def main():

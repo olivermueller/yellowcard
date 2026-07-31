@@ -89,7 +89,7 @@ def main():
     coef_rows, block_rows, pos_rows = [], [], []
     # restricted to the outcomes with significant average effects (Oliver,
     # 2026-07-29); full-set results recoverable from git history
-    for dv in ["post_n_def_actions", "post_n_pressure", "post_n_foul_committed"]:
+    for dv in ["post_n_opp_directed", "post_n_pressure", "post_n_foul_committed"]:
         lab = DVS[dv]
         fit = sm.OLS(Y_res[dv], feats).fit(cov_type="cluster", cov_kwds={"groups": groups})
         b = np.asarray(fit.params); V = np.asarray(fit.cov_params())

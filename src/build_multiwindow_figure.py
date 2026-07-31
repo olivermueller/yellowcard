@@ -25,13 +25,19 @@ def main():
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
     xs = np.arange(len(wins))
 
-    panels = [("def_actions", "Defensive actions (aggregate)"),
-              ("fouls", "Fouls"), ("pressures", "Pressures"), ("tackles", "Tackles"),
-              ("ball_recoveries", "Ball recoveries"), ("clearances", "Clearances"),
-              ("blocks", "Blocks"), ("interceptions", "Interceptions")]
-    fig, axes = plt.subplots(4, 2, figsize=(11, 13.5), sharex=True)
+    # column per category: left opponent-directed, right ball-directed
+    panels = [("opp_directed", "Opponent-directed (aggregate)"),
+              ("ball_directed", "Ball-directed (aggregate)"),
+              ("fouls", "Fouls"), ("ball_recoveries", "Ball recoveries"),
+              ("pressures", "Pressures"), ("clearances", "Clearances"),
+              ("tackles", "Tackles"), ("blocks", "Blocks"),
+              (None, None), ("interceptions", "Interceptions")]
+    fig, axes = plt.subplots(5, 2, figsize=(11, 16.5), sharex=True)
     axes = axes.ravel()
     for ax, (dv, ttl) in zip(axes, panels):
+        if dv is None:
+            ax.axis("off")
+            continue
         m = mw[mw.dv == dv].set_index("window")
         est = np.array([100 * m.loc[w, "ate"] / m.loc[w, "control_mean"] for w in wins])
         ci = np.array([196 * m.loc[w, "se"] / m.loc[w, "control_mean"] for w in wins])
@@ -50,6 +56,7 @@ def main():
         for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
     for i in (0, 2, 4, 6):
         axes[i].set_ylabel("effect relative to control mean (%)")
+    axes[9].tick_params(labelbottom=True)
     from matplotlib.lines import Line2D
     handles = [Line2D([], [], marker="o", ls="none", color=BLU, ms=7,
                       label="significant at the 5% level"),

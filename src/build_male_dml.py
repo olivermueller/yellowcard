@@ -29,13 +29,15 @@ from sklearn.model_selection import GroupKFold, cross_val_predict
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analysis_config import build_W_Z
 
-DVS = {"post_n_def_actions": "def_actions", "post_n_pressure": "pressures",
+# Taxonomy of defensive actions (Oliver, 2026-07-30): opponent-directed
+# (pressures, tackles, fouls -- actions contesting an opponent, sanction
+# risk) vs ball-directed (recoveries, clearances, blocks, interceptions --
+# no opponent contest, no sanction path). No grand total.
+DVS = {"post_n_opp_directed": "opp_directed", "post_n_pressure": "pressures",
        "post_n_tackle": "tackles", "post_n_foul_committed": "fouls",
+       "post_n_ball_directed": "ball_directed",
        "post_n_ball_recovery": "ball_recoveries", "post_n_clearance": "clearances",
        "post_n_block": "blocks", "post_n_interception": "interceptions"}
-# defensive actions = pressures + tackles + fouls (frame aggregate
-# post_n_def_events) + ball recoveries + clearances + blocks +
-# interceptions (merged from events in load()); decided 2026-07-29.
 NEW_POST = {"Ball Recovery": "ball_recovery", "Clearance": "clearance",
             "Block": "block", "Interception": "interception"}
 HGB = dict(max_iter=400, learning_rate=0.05, min_samples_leaf=200, random_state=0)
@@ -75,9 +77,9 @@ def load():
     for t in NEW_POST.values():
         df[f"post_n_{t}"] = df[t].fillna(0) if t in df.columns else 0.0
     df = df.drop(columns=[t for t in NEW_POST.values() if t in df.columns])
-    df["post_n_def_actions"] = (df.post_n_def_events + df.post_n_ball_recovery
-                                + df.post_n_clearance + df.post_n_block
-                                + df.post_n_interception)
+    df["post_n_opp_directed"] = df.post_n_def_events
+    df["post_n_ball_directed"] = (df.post_n_ball_recovery + df.post_n_clearance
+                                  + df.post_n_block + df.post_n_interception)
     return df
 
 

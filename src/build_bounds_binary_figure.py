@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 BLU, INK, GRID = "#2a78d6", "#1b2733", "#e3e8ee"
 # restricted to the outcomes with significant Section-5 effects (Oliver, 2026-07-29);
 # bounds for the null outcomes remain in data/lee_bounds_binary_im.csv
-PANELS = [("any_def_action", "Defensive actions"), ("any_pressure", "Pressures"),
+PANELS = [("any_opp_directed", "Opponent-directed"), ("any_pressure", "Pressures"),
           ("any_foul", "Fouls")]
 
 
