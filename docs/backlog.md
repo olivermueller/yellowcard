@@ -7,7 +7,7 @@ Completed items are removed from this list; the full record of decisions and res
 ---
 
 ## A. Story & framing
-- [ ] **(P1)** Write §2 Related work (three strands: cards→team outcomes; suspension/deterrence between matches; cards as referee decisions; gap = within-match player-level response). No causal-ML-in-sports strand; no "Foul Play" (cards are outcome there, not treatment).
+- [x] **§2 Related work WRITTEN (2026-07-31, commit 62ffdcf)** on a re-run, verified literature search: three strands + scoped gap (causal/player-level/within-match, football; Durygin et al. 2024 StatsBomb descriptive work distinguished; NBA foul-trouble literature acknowledged; Badiella et al. 2023 names our question as open). Corrections vs old notes: Červený = Empirical Economics; Deutscher 2013 → Deutscher et al. 2022 + Kruse/Maennig WP; Yellow fever = Philipson JRSS-A 2026. OPEN: Oliver reviews §2.
 - [ ] **(P2)** Write abstract (~200 words) + §1 Introduction (lead with the football/behaviour question; three margins: booked players withdrawn 2.7x more often [non-causal phrasing], player fouls −26.5%, teammates +4.5% fouls / +3.6% recoveries) + keywords (3–6, not in title).
 - [ ] **(P1)** Write §6 Discussion and conclusion (was §7 before the §6→5.4 fold).
 - [ ] **(P2)** At submission: attach the cut full-outcome tables (HTE coefficients, null-outcome bounds) as online supplementary material (Table S1 etc.) to reconcile the significant-findings focus with the completeness rule.
