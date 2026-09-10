@@ -107,6 +107,13 @@ F3 multi-window effect profile with bounds (new — the money figure) · F4 subg
 F5 plausibility (withdrawn vs survivors). Tables: T1 variables · T2 attrition · T3 descriptives +
 main DML effects · T4 multi-window + Lee/IM bounds · T5 spillover.
 
+## Style rule (Oliver, 2026-09-10)
+
+Avoid Claude-typical punctuation in all project text: em-dashes (---) only sparingly (no
+parenthetical asides as default), no claim-colon-elaboration splices, no semicolon-chained
+long sentences. Prefer commas, parentheses, or separate sentences. Manuscript scanned and
+cleaned 2026-09-10.
+
 ## Status (2026-07-30)
 
 Polish round on Oliver's read (all pushed, manuscript d704b75, 30 pp, clean compile):
