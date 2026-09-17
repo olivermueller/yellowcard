@@ -73,17 +73,12 @@ def main():
     bins = np.arange(0, 95, 5)
     grps = ["Defender", "Midfielder", "Forward"]
 
-    # --- yellow cards: overall + per position group (2x2) ---
-    fig, axes = plt.subplots(2, 2, figsize=(10, 6.4), sharex=True)
-    panels = [("All outfield players", yel)] + [(g, yel[yel.grp == g]) for g in grps]
-    for ax, (ttl, d) in zip(axes.ravel(), panels):
-        ax.hist(d.m, bins=bins, color=YEL, edgecolor="white", lw=.8, zorder=2)
-        style(ax)
-        ax.set_title(ttl, fontsize=11, color=INK, loc="left", fontweight="bold")
-    for i in (0, 2): axes.ravel()[i].set_ylabel("events")
-    for i in (2, 3): axes.ravel()[i].set_xlabel("minute")
-    axes.ravel()[0].text(46, axes.ravel()[0].get_ylim()[1]*.93, "HT",
-                         fontsize=8, color="#9aa3ad")
+    # --- yellow cards: overall, single panel ---
+    fig, ax = plt.subplots(figsize=(8, 3.6))
+    ax.hist(yel.m, bins=bins, color=YEL, edgecolor="white", lw=.8, zorder=2)
+    style(ax)
+    ax.set_ylabel("events"); ax.set_xlabel("minute")
+    ax.text(46, ax.get_ylim()[1]*.93, "HT", fontsize=8, color="#9aa3ad")
     fig.tight_layout()
     fig.savefig("fig_timing_cards.png", dpi=300, facecolor="white")
 
