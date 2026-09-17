@@ -8,7 +8,8 @@ Stoppage time is folded into the 45' and 90' bins (period-1 minutes clipped
 to 45, period-2 to 90); half-time subs are recorded by StatsBomb at period 2,
 minute 45.
 
-Outputs: fig_desc_minutes_overall.png, fig_desc_minutes_by_position.png
+Outputs: fig_timing_cards.png, fig_timing_subs.png (each a 2x2 grid:
+overall + Defender/Midfielder/Forward panels).
 """
 import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
@@ -70,51 +71,40 @@ def main():
     print(pd.DataFrame({"yellows": yel.grp.value_counts(), "subs": sub.grp.value_counts()}).to_string())
 
     bins = np.arange(0, 95, 5)
-    fig, axes = plt.subplots(1, 2, figsize=(10, 3.4), sharex=True)
-    ax = axes[0]
-    ax.hist(yel.m, bins=bins, color=YEL, edgecolor="white", lw=.8, zorder=2)
-    style(ax); ax.set_title("Yellow cards", fontsize=11, color=INK, loc="left", fontweight="bold")
-    ax.set_xlabel("minute"); ax.set_ylabel("events")
-    ax.text(46, ax.get_ylim()[1]*.93, "HT", fontsize=8, color="#9aa3ad")
-    ax = axes[1]
-    ax.hist(sub_play.m, bins=bins, color=BLU, edgecolor="white", lw=.8, zorder=2,
-            label="during play")
-    ax.bar(45, sub.interval.sum(), width=2.2, color="#9fc2ea", edgecolor=BLU,
-           hatch="///", lw=.8, zorder=3, label="half-time interval")
-    style(ax); ax.set_title("Substitutions", fontsize=11, color=INK, loc="left", fontweight="bold")
-    ax.set_xlabel("minute")
-    ax.legend(fontsize=8.5, frameon=False, loc="upper left")
-    fig.tight_layout()
-    fig.savefig("fig_desc_minutes_overall.png", dpi=300, facecolor="white")
-
     grps = ["Defender", "Midfielder", "Forward"]
-    # common y-limits per column (over the position rows)
-    ymax_yel = max(np.histogram(yel[yel.grp == g].m, bins=bins)[0].max() for g in grps)
-    ymax_sub = max(max(np.histogram(sub[(sub.grp == g) & ~sub.interval].m, bins=bins)[0].max(),
-                       sub[(sub.grp == g)].interval.sum()) for g in grps)
-    fig, axes = plt.subplots(3, 2, figsize=(10, 7.2), sharex=True)
-    for i, g in enumerate(grps):
-        ax = axes[i, 0]
-        ax.hist(yel[yel.grp == g].m, bins=bins, color=YEL, edgecolor="white", lw=.8, zorder=2)
-        style(ax); ax.set_ylim(0, 1.06 * ymax_yel)
-        if i == 0: ax.set_title("Yellow cards", fontsize=11, color=INK, loc="left", fontweight="bold")
-        ax.set_ylabel(g, fontsize=10, color=INK)
-        if i == 2: ax.set_xlabel("minute")
-        ax = axes[i, 1]
-        gg = sub[sub.grp == g]
-        _, _, hp = ax.hist(gg[~gg.interval].m, bins=bins, color=BLU, edgecolor="white",
-                           lw=.8, zorder=2, label="during play")
-        hb = ax.bar(45, gg.interval.sum(), width=2.2, color="#9fc2ea", edgecolor=BLU,
-                    hatch="///", lw=.8, zorder=3, label="half-time interval")
-        style(ax); ax.set_ylim(0, 1.06 * ymax_sub)
-        if i == 0:
-            ax.set_title("Substitutions", fontsize=11, color=INK, loc="left", fontweight="bold")
-            ax.legend(handles=[hp[0], hb[0]], labels=["during play", "half-time interval"],
-                      fontsize=8, frameon=False, loc="upper left")
-        if i == 2: ax.set_xlabel("minute")
+
+    # --- yellow cards: overall + per position group (2x2) ---
+    fig, axes = plt.subplots(2, 2, figsize=(10, 6.4), sharex=True)
+    panels = [("All outfield players", yel)] + [(g, yel[yel.grp == g]) for g in grps]
+    for ax, (ttl, d) in zip(axes.ravel(), panels):
+        ax.hist(d.m, bins=bins, color=YEL, edgecolor="white", lw=.8, zorder=2)
+        style(ax)
+        ax.set_title(ttl, fontsize=11, color=INK, loc="left", fontweight="bold")
+    for i in (0, 2): axes.ravel()[i].set_ylabel("events")
+    for i in (2, 3): axes.ravel()[i].set_xlabel("minute")
+    axes.ravel()[0].text(46, axes.ravel()[0].get_ylim()[1]*.93, "HT",
+                         fontsize=8, color="#9aa3ad")
     fig.tight_layout()
-    fig.savefig("fig_desc_minutes_by_position.png", dpi=300, facecolor="white")
-    print("\nwrote fig_desc_minutes_overall.png, fig_desc_minutes_by_position.png")
+    fig.savefig("fig_timing_cards.png", dpi=300, facecolor="white")
+
+    # --- substitutions: overall + per position group (2x2) ---
+    fig, axes = plt.subplots(2, 2, figsize=(10, 6.4), sharex=True)
+    panels = [("All outfield players", sub)] + [(g, sub[sub.grp == g]) for g in grps]
+    for k, (ax, (ttl, d)) in enumerate(zip(axes.ravel(), panels)):
+        _, _, hp = ax.hist(d[~d.interval].m, bins=bins, color=BLU, edgecolor="white",
+                           lw=.8, zorder=2)
+        hb = ax.bar(45, d.interval.sum(), width=2.2, color="#9fc2ea", edgecolor=BLU,
+                    hatch="///", lw=.8, zorder=3)
+        style(ax)
+        ax.set_title(ttl, fontsize=11, color=INK, loc="left", fontweight="bold")
+        if k == 0:
+            ax.legend(handles=[hp[0], hb[0]], labels=["during play", "half-time interval"],
+                      fontsize=8.5, frameon=False, loc="upper left")
+    for i in (0, 2): axes.ravel()[i].set_ylabel("events")
+    for i in (2, 3): axes.ravel()[i].set_xlabel("minute")
+    fig.tight_layout()
+    fig.savefig("fig_timing_subs.png", dpi=300, facecolor="white")
+    print("\nwrote fig_timing_cards.png, fig_timing_subs.png")
 
 
 if __name__ == "__main__":
