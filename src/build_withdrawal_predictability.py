@@ -1,42 +1,44 @@
-"""Plausibility check for the Lee worst case (backlog C).
+"""Plausibility check for the Lee worst case: is early withdrawal of
+booked players predictable from observables?
 
 The worst-case (upper) Lee bound assumes the marginal players — booked
 players who were withdrawn early and their would-be-withdrawn control
 counterparts — are the TOP-TAIL outcome types within each cell. This
 script confronts that with data. Among booked players (first yellow in
-[15,45], starters, on pitch at the end of H1), it compares those
-withdrawn by 60' (incl. half-time) with those kept on:
+[15,45], starters, on pitch at the end of H1), it
 
-  (a) printed diagnostics: H1 fouls and the percentile of pre-window
-      [0,15) activity within position-matched control survivors;
-  (b) figure: standardized mean differences (withdrawn minus kept on,
-      pooled SD) over pre-window characteristics, with 95% CIs.
+  (a) prints descriptive diagnostics: H1 fouls and the percentile of
+      pre-window [0,15) activity within position-matched control
+      survivors, and standardized mean differences (withdrawn minus
+      kept on) over pre-window characteristics;
+  (b) fits classifiers predicting withdrawal by 60' (incl. half-time)
+      from the pre-window characteristics plus the booking minute:
+      the paper's HGB learner and a logistic benchmark, 5-fold
+      stratified CV, held-out AUC/Brier, and CV-averaged permutation
+      importances (held-out AUC drop).
 
 Withdrawn players are absent from the analysis frame (it conditions on
 observability), so their covariates are rebuilt from the raw events and
 merged from the frame at the player level (age) and team-match level
 (win probability, score margin, home).
-
-Output: fig_smd_withdrawn.png + printed comparison tables.
 """
 import warnings; warnings.filterwarnings("ignore")
 import sys
 from pathlib import Path
 import numpy as np, pandas as pd
-import matplotlib; matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from sklearn.metrics import roc_auc_score, brier_score_loss
+from sklearn.inspection import permutation_importance
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_multiwindow as mw
 
-BLU, YEL, RED, INK, GRID = "#2a78d6", "#eda100", "#e34948", "#1b2733", "#e3e8ee"
-
 COMPS = ["foul_committed", "pressure", "tackle", "ball_recovery",
          "clearance", "block", "interception"]
-LABELS = {"foul_committed": "Fouls committed", "pressure": "Pressures",
-          "tackle": "Tackles", "ball_recovery": "Ball recoveries",
-          "clearance": "Clearances", "block": "Blocks",
-          "interception": "Interceptions"}
 
 
 def smd(a, b):
@@ -49,7 +51,7 @@ def smd(a, b):
     return d, 1.96 * se
 
 
-def main():
+def build_population():
     frame, ev, lu = mw.load_all()
     h1x, e2 = mw.exits(ev)
     card = ev[mw.CARD[0]].where(ev[mw.CARD[0]].notna(), ev[mw.CARD[1]])
@@ -58,7 +60,6 @@ def main():
     bk = set(zip(*ev[card.eq("Yellow Card") & (ev.period == 1)]
                  [["match_id", "player_id"]].drop_duplicates().values.T))
 
-    # population: starters on pitch at end of H1, outfield
     pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
              .groupby(["match_id", "player_id"]).position.first()
              .map(frame.drop_duplicates("position").set_index("position").position_group.to_dict())
@@ -83,8 +84,6 @@ def main():
     E = E[E.grp.isin(["Defender", "Midfielder", "Forward"])]
     E["key"] = list(zip(E.match_id, E.player_id))
 
-    # covariates from the frame: age at player level (dob + match date),
-    # win probability / score margin / home at team-match level
     dob = (frame.dropna(subset=["dob"]).drop_duplicates("player_id")
                 .set_index("player_id").dob)
     mdate = frame.drop_duplicates("match_id").set_index("match_id").match_date
@@ -94,19 +93,28 @@ def main():
     E["age"] = ((pd.to_datetime(E.match_id.map(mdate))
                  - pd.to_datetime(E.player_id.map(dob))).dt.days / 365.25)
     E["home"] = (E.home_away == "home").astype(float)
+    bmin = (y1.sort_values("minute").drop_duplicates(["match_id", "player_id"])
+              .set_index(["match_id", "player_id"]).minute)
+    E["book_minute"] = [bmin.get(k, np.nan) for k in E.key]
+    for g in ["Defender", "Midfielder", "Forward"]:
+        E[g] = (E.grp == g).astype(float)
+    return E, tk, bk
 
-    ctrl = E[~E.key.isin(bk)].copy()                       # unbooked
+
+def main():
+    E, tk, bk = build_population()
+    ctrl = E[~E.key.isin(bk)]
     booked = E[E.key.isin(tk)].copy()
-    booked["withdrawn"] = booked.exit2 <= 60
+    booked["withdrawn"] = (booked.exit2 <= 60).astype(int)
     ctrl_surv = ctrl[ctrl.exit2 > 60]
-    kept, wdr = booked[~booked.withdrawn], booked[booked.withdrawn]
+    kept = booked[booked.withdrawn == 0]
+    wdr = booked[booked.withdrawn == 1]
 
     groups = {"Control survivors": ctrl_surv,
               "Booked, kept on": kept,
               "Booked, withdrawn by 60'": wdr}
     print("n per group:", {k: len(v) for k, v in groups.items()})
 
-    # (a) printed diagnostics (unchanged)
     tab = {}
     for name, g in groups.items():
         f = g.h1_fouls
@@ -125,41 +133,41 @@ def main():
     for k, v in pct.items():
         print(f"  {k:26s} mean {v.mean():5.1f} | median {np.median(v):5.1f} | share in top decile {100*(v>=90).mean():4.1f}%")
 
-    # (b) SMD dot plot: withdrawn minus kept on, pre-window characteristics
-    chars = ([("Total events", "pre_n")]
-             + [(LABELS[c], c) for c in COMPS]
-             + [("Score margin at 15'", "pre_score_diff"),
-                ("Pre-match win probability", "odds_p_win"),
-                ("Home team", "home"), ("Age", "age")])
-    for grp_name in ["Defender", "Midfielder", "Forward"]:
-        kept[grp_name] = (kept.grp == grp_name).astype(float)
-        wdr[grp_name] = (wdr.grp == grp_name).astype(float)
-    chars += [("Defender", "Defender"), ("Midfielder", "Midfielder"),
-              ("Forward", "Forward")]
-
-    rows = [(lbl, *smd(kept[col].astype(float).values, wdr[col].astype(float).values))
-            for lbl, col in chars]
+    FEATS = (["pre_n"] + COMPS + ["pre_score_diff", "odds_p_win", "home", "age",
+                                  "book_minute", "Defender", "Midfielder", "Forward"])
     print("\nSMD (withdrawn - kept on):")
-    for lbl, d, ci in rows:
-        print(f"  {lbl:26s} {d:+.3f} +- {ci:.3f}")
+    for col in FEATS:
+        if col == "book_minute":
+            continue
+        d, ci = smd(kept[col].astype(float).values, wdr[col].astype(float).values)
+        print(f"  {col:16s} {d:+.3f} +- {ci:.3f}")
 
-    labels = [r[0] for r in rows]
-    ds = np.array([r[1] for r in rows]); cis = np.array([r[2] for r in rows])
-    y = np.arange(len(rows))[::-1]
-    fig, ax = plt.subplots(figsize=(7.2, 5.6))
-    ax.axvline(0, color=INK, lw=1.0, zorder=1)
-    for v in (-0.1, 0.1):
-        ax.axvline(v, color="#9aa3ad", lw=1.0, ls="--", zorder=1)
-    ax.errorbar(ds, y, xerr=cis, fmt="o", color=BLU, ecolor=BLU,
-                elinewidth=1.2, capsize=2.5, ms=5.5, zorder=3)
-    ax.set_yticks(y); ax.set_yticklabels(labels, fontsize=9.5)
-    ax.set_xlabel("standardized mean difference (withdrawn $-$ kept on)")
-    ax.grid(axis="x", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
-    for sp in ["top", "right", "left"]: ax.spines[sp].set_visible(False)
-    ax.tick_params(axis="y", length=0)
-    fig.tight_layout()
-    fig.savefig("fig_smd_withdrawn.png", dpi=300, facecolor="white")
-    print("\nwrote fig_smd_withdrawn.png")
+    # classifier: predict withdrawal among booked players
+    d = booked.dropna(subset=["odds_p_win", "pre_score_diff", "age"])
+    X, y = d[FEATS].values, d.withdrawn.values
+    print(f"\nclassifier sample: n={len(d)}, withdrawn={y.sum()} ({100*y.mean():.1f}%)")
+
+    cv = StratifiedKFold(5, shuffle=True, random_state=0)
+    hgb = lambda: HistGradientBoostingClassifier(max_iter=400, learning_rate=0.05,
+                                                 min_samples_leaf=200, random_state=0)
+    p_hgb = cross_val_predict(hgb(), X, y, cv=cv, method="predict_proba")[:, 1]
+    logit = make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000))
+    p_log = cross_val_predict(logit, X, y, cv=cv, method="predict_proba")[:, 1]
+    base = np.full_like(p_hgb, y.mean())
+    print(f"HGB   : AUC {roc_auc_score(y, p_hgb):.3f} | Brier {brier_score_loss(y, p_hgb):.4f}")
+    print(f"Logit : AUC {roc_auc_score(y, p_log):.3f} | Brier {brier_score_loss(y, p_log):.4f}")
+    print(f"Const : Brier {brier_score_loss(y, base):.4f}")
+
+    imp = np.zeros(len(FEATS))
+    for tr, te in cv.split(X, y):
+        m = hgb().fit(X[tr], y[tr])
+        r = permutation_importance(m, X[te], y[te], scoring="roc_auc",
+                                   n_repeats=20, random_state=0)
+        imp += r.importances_mean
+    imp /= cv.get_n_splits()
+    print("\npermutation importance (mean held-out AUC drop):")
+    for i in np.argsort(imp)[::-1]:
+        print(f"  {FEATS[i]:16s} {imp[i]:+.4f}")
 
 
 if __name__ == "__main__":
