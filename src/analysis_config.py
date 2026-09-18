@@ -1,5 +1,5 @@
 """Single source of truth for the W (confounders) and Z (moderators) matrices
-shared by 04_dml.ipynb and build_subgroup_figure.py.
+shared by 04_dml.ipynb and the figure scripts.
 
 Edit Z_NUM or CATS here to change the moderator set; both the notebook and
 the heterogeneity figures will rebuild from this definition automatically.

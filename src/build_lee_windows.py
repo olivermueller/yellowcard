@@ -1,6 +1,6 @@
 """Conditional Lee bounds for ALL H2 windows (45-50/60/70/80), corrected sample.
 
-Generalises build_lee_anchor.py: for each window end b, rebuild the
+For each window end b, rebuild the
 multi-window dataset (starters, no H1 exit, on pitch through b, censored
 players restored), compute per-cell trimming shares from survival to b
 (cells = position x pre-activity tercile, measured on starters on the
