@@ -8,11 +8,6 @@ documents/
 # Historical backups and one-off cleanups
 backup/
 
-# Build outputs (regenerable from the src/ figure scripts)
-figures/
-fig_*.png
-fig_*.pdf
-
 # Local notebook artefacts
 .ipynb_checkpoints/
 __pycache__/
