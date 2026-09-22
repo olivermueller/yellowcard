@@ -114,7 +114,7 @@ def main():
     ax.set_xlabel("age at match (years)")
     ax.set_ylabel("effect on fouls, 45–60′ (events)")
     ax.set_title("C  Age", loc="left", fontsize=11, fontweight="bold", color=INK)
-    ax.text(.98, .04, "block p = .84 (n.s.)", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
+    ax.text(.98, .04, "block p = .82 (n.s.)", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
     style(ax)
 
     # --- D: pre-match win probability (continuous) ---
@@ -132,7 +132,7 @@ def main():
     ax.plot(ops, ths, color=BLU, lw=2, zorder=2)
     ax.set_xlabel("pre-match win probability")
     ax.set_title("D  Pre-match win probability", loc="left", fontsize=11, fontweight="bold", color=INK)
-    ax.text(.98, .04, "block p = .24 (n.s.)", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
+    ax.text(.98, .04, "block p = .26 (n.s.)", transform=ax.transAxes, ha="right", fontsize=9, color=MUT)
     style(ax)
 
     fig.suptitle("")
