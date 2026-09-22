@@ -10,12 +10,12 @@ player-matches with 2,650 first-half bookings), it applies double machine
 learning to adjust for a high-dimensional set of pre-treatment confounders and
 bounds the influence of selective substitution with trimming bounds.
 Opponent-directed defensive actions decline by an estimated 6.1%, with fouls
-falling by 26.5% and pressures by 4.9%, while tackles and all ball-directed
+falling by 26.6% and pressures by 5.0%, while tackles and all ball-directed
 defensive actions remain unchanged. The reduction appears immediately after the
 restart, persists to full time, and is concentrated among defensive midfielders
 and central defenders and among players whose team is level or leading at the
 interval. Teammates of booked players increase their fouling by an estimated
-4.5%, and booked players are withdrawn at half-time 2.7 times as often as
+4.3%, and booked players are withdrawn at half-time 2.1 times as often as
 comparable unbooked players.
 
 ## Data sources
