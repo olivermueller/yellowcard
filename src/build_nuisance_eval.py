@@ -8,7 +8,7 @@ predictions from the same HGB learners as the main analysis.
         rate per predicted-propensity decile).
   m(W): out-of-fold R^2 per outcome.
 
-Outputs: data/nuisance_metrics.csv, fig_calibration.png (300 dpi).
+Outputs: data/nuisance_metrics.csv, figures/fig_calibration.png (300 dpi).
 """
 import warnings; warnings.filterwarnings("ignore")
 import sys
@@ -19,12 +19,13 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, brier_score_loss
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import DVS, build_W, crossfit, load
+from build_dml import DVS, build_W, crossfit, load
 
 BLU, YEL, INK, GRID = "#2a78d6", "#eda100", "#1b2733", "#e3e8ee"
 
 
 def main():
+    Path("figures").mkdir(exist_ok=True)
     df = load()
     W = build_W(df)
     t = df.treat_yellow_card.astype(int).values
@@ -59,10 +60,10 @@ def main():
     ax.grid(color=GRID, lw=.6); ax.set_axisbelow(True)
     for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
     fig.tight_layout()
-    fig.savefig("fig_calibration.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_calibration.png", dpi=300, facecolor="white")
     print("\ncalibration by decile:")
     print(cal.round(4).to_string())
-    print("\nwrote data/nuisance_metrics.csv, fig_calibration.png")
+    print("\nwrote data/nuisance_metrics.csv, figures/fig_calibration.png")
 
 
 if __name__ == "__main__":

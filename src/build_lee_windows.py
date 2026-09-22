@@ -1,4 +1,4 @@
-"""Conditional Lee bounds for ALL H2 windows (45-50/60/70/80).
+"""Conditional Lee bounds for all H2 windows (45-50/60/70/80/90).
 
 For each window end b, rebuild the
 multi-window dataset (starters, no H1 exit, on pitch through b, censored
@@ -20,7 +20,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor, HistGradientBoosting
 from sklearn.model_selection import GroupKFold, cross_val_predict
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import DVS, HGB, build_W, crossfit, ate
+from build_dml import DVS, HGB, build_W, crossfit, ate
 import build_multiwindow as mw
 
 WINDOWS = [50, 60, 70, 80, 90]

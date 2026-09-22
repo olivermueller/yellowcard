@@ -1,14 +1,15 @@
 """Multi-window effect profile figure.
 
-Relative DML effects on the defensive-actions aggregate and all
+Relative DML effects on the opponent-directed aggregate and its
 components across the H2 outcome windows (points, 95% cluster-robust
 CIs). Marker convention mirrors the heterogeneity figure: filled =
 significant at the 5% level, open = not.
 
 Input:  data/multiwindow_results.csv
-Output: fig_multiwindow.png (300 dpi).
+Output: figures/fig_multiwindow.png (300 dpi).
 """
 import warnings; warnings.filterwarnings("ignore")
+from pathlib import Path
 import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -21,6 +22,7 @@ def rel(v):  # "+12.3%" -> 12.3
 
 
 def main():
+    Path("figures").mkdir(exist_ok=True)
     mw = pd.read_csv("data/multiwindow_results.csv")
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
     xs = np.arange(len(wins))
@@ -32,9 +34,6 @@ def main():
     fig, axes = plt.subplots(2, 2, figsize=(11, 7.6), sharex=True)
     axes = axes.ravel()
     for ax, (dv, ttl) in zip(axes, panels):
-        if dv is None:
-            ax.axis("off")
-            continue
         m = mw[mw.dv == dv].set_index("window")
         est = np.array([100 * m.loc[w, "ate"] / m.loc[w, "control_mean"] for w in wins])
         ci = np.array([196 * m.loc[w, "se"] / m.loc[w, "control_mean"] for w in wins])
@@ -62,8 +61,8 @@ def main():
     fig.legend(handles=handles, fontsize=9.5, frameon=False, ncol=3,
                loc="upper center", bbox_to_anchor=(0.5, 0.995))
     fig.tight_layout(rect=(0, 0, 1, 0.975))
-    fig.savefig("fig_multiwindow.png", dpi=300, facecolor="white")
-    print("wrote fig_multiwindow.png")
+    fig.savefig("figures/fig_multiwindow.png", dpi=300, facecolor="white")
+    print("wrote figures/fig_multiwindow.png")
 
 
 if __name__ == "__main__":

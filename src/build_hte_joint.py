@@ -15,7 +15,7 @@ WideDef (full/wing backs), DefMid (defensive + centre midfield), OffMid
 (attacking + wide midfield), Forward. Age and win probability enter
 continuously with quadratic terms.
 
-Sample and nuisances as in build_male_dml.py (primary 45-60 outcomes).
+Sample and nuisances as in build_dml.py (primary 45-60 outcomes).
 
 Outputs: data/hte_joint_coefs.csv, data/hte_joint_blocks.csv,
          data/hte_joint_pos5.csv (implied per-position effects).
@@ -27,7 +27,7 @@ import numpy as np, pandas as pd
 import statsmodels.api as sm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import DVS, build_W, crossfit, load
+from build_dml import DVS, build_W, crossfit, load
 
 POS5 = {
  "Center Back": "CentralDef", "Left Center Back": "CentralDef", "Right Center Back": "CentralDef",
@@ -70,9 +70,6 @@ BLOCKS = {"position": ["pos_WideDef", "pos_DefMid", "pos_OffMid", "pos_Forward"]
 
 def main():
     df = load()
-    if "competition_format" not in df.columns:
-        df["competition_format"] = (df["competition_type"] == "Domestic League").map(
-            {True: "league", False: "cup"})
     Z, pos5 = z_design(df)
     print("treated by pos5:", df[df.treat_yellow_card == 1].position.map(POS5).value_counts().to_dict())
 
@@ -160,7 +157,7 @@ def main():
     print(cr[cr.dv == "fouls"].to_string(index=False))
     print("\n=== implied per-position effects (other Z at means) ===")
     pr = pd.DataFrame(pos_rows)
-    print(pr[pr.dv.isin(["fouls", "def_actions"])].to_string(index=False))
+    print(pr[pr.dv.isin(["fouls", "opp_directed"])].to_string(index=False))
     print("\nwrote data/hte_joint_{coefs,blocks,pos5,gs3}.csv")
 
 

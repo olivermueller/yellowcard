@@ -16,29 +16,27 @@ delete from the top/bottom of the control outcome distribution.
 
 Output: data/censoring_by_window.csv + printed table.
 """
+import sys
+from pathlib import Path
 import numpy as np, pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from build_dml import POSITION_GROUP
 
 CARD = ["foul_committed_card", "bad_behaviour_card"]
 WINDOWS = [50, 60, 70, 80]
 
 
 def main():
-    af = pd.read_csv("data/analysis_frame.csv",
-                     usecols=["match_id", "gender", "competition", "season",
-                              "position", "position_group"], low_memory=False)
-    af = af[(af.gender == "male")
-            & af.competition.isin(["La Liga", "Ligue 1", "Premier League", "Serie A", "1. Bundesliga"])
-            & ~af.season.isin(["1973/1974", "1986/1987"])]      # analysis match universe
+    af = pd.read_csv("data/analysis_frame.csv", usecols=["match_id"], low_memory=False)
     mids = af.match_id.unique().tolist()
-    posmap = af.drop_duplicates("position").set_index("position").position_group.to_dict()
-    posmap["Goalkeeper"] = "Goalkeeper"
 
     ev = pd.read_parquet("data/events.parquet",
         columns=["match_id", "player_id", "period", "minute", "type", "position"] + CARD,
         filters=[("match_id", "in", mids)])
     card = ev[CARD[0]].where(ev[CARD[0]].notna(), ev[CARD[1]])
     pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
-             .groupby(["match_id", "player_id"]).position.first().map(posmap).rename("grp"))
+             .groupby(["match_id", "player_id"]).position.first().map(POSITION_GROUP).rename("grp"))
 
     sub = ev[(ev.type == "Substitution") & ev.period.le(2)]
     red = ev[card.isin(["Second Yellow", "Red Card"]) & ev.period.le(2)]
@@ -52,7 +50,7 @@ def main():
     booked_keys = set(zip(*ev[card.eq("Yellow Card") & (ev.period == 1)]
                           [["match_id", "player_id"]].drop_duplicates().values.T))
 
-    lu = pd.read_parquet("data/lineups_male.parquet")
+    lu = pd.read_parquet("data/lineups.parquet")
     E = lu[lu.started][["match_id", "player_id"]]
     E = E[[k not in h1_exit for k in zip(E.match_id, E.player_id)]].copy()
     E = E.merge(exit2, on=["match_id", "player_id"], how="left")
@@ -69,7 +67,7 @@ def main():
                 .merge(pre, on=["match_id", "player_id"], how="left"))
         D2["pre_n"] = D2.pre_n.fillna(0)
         act = pd.qcut(D2.pre_n.rank(method="first"), 3, labels=["low", "mid", "high"]).astype(str)
-        D["cell"] = D2.grp.values + "|" + act.values
+        D["cell"] = D2.grp.fillna("Unknown").values + "|" + act.values
 
     print(f"HT withdrawal: treated {100*(T.exit2==45).mean():.1f}% vs control {100*(C.exit2==45).mean():.2f}%")
 

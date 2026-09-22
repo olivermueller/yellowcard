@@ -17,16 +17,12 @@ from sklearn.model_selection import GroupKFold, cross_val_predict
 from scipy.stats import norm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from analysis_config import build_W_Z
-from build_male_dml import HGB
-
-from build_male_dml import DVS as _DVS
+from build_dml import DVS as _DVS, HGB, build_W, load
 DVS = list(_DVS)
 
 
 def main():
-    from build_male_dml import load as load_spec
-    df = load_spec()
+    df = load()
 
     tc = df.groupby(["match_id", "team_id"]).treat_yellow_card.sum()
     df = df.join(tc.rename("team_n"), on=["match_id", "team_id"])
@@ -35,8 +31,7 @@ def main():
     print(f"sample: {len(d):,} ({len(df)-len(d):,} teammate-exposed controls dropped) | "
           f"treated {int(d.treat_yellow_card.sum()):,}")
 
-    from build_male_dml import build_W as bw
-    W = bw(d)
+    W = build_W(d)
     t = d.treat_yellow_card.astype(int).values
     groups = d.match_id.values
     cv = GroupKFold(5)

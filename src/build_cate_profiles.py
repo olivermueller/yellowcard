@@ -14,7 +14,7 @@ import numpy as np, pandas as pd
 import statsmodels.api as sm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import build_W, crossfit, load
+from build_dml import build_W, crossfit, load
 from build_hte_joint import z_design, POS_ORDER
 
 DV = "post_n_foul_committed"

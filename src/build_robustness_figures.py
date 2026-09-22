@@ -1,6 +1,6 @@
 """Propensity-overlap figure (manuscript Appendix C).
 
-fig_overlap.png      Distribution of the cross-fitted booking propensity
+figures/fig_overlap.png      Distribution of the cross-fitted booking propensity
                      e(W) by treatment status (log-count histograms).
 """
 import warnings; warnings.filterwarnings("ignore")
@@ -13,12 +13,13 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.model_selection import GroupKFold, cross_val_predict
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import HGB, build_W, load
+from build_dml import HGB, build_W, load
 
 BLU, YEL, GRID = "#2a78d6", "#eda100", "#e3e8ee"
 
 
 def main():
+    Path("figures").mkdir(exist_ok=True)
     df = load()
     W = build_W(df)
     t = df.treat_yellow_card.astype(int).values
@@ -38,8 +39,8 @@ def main():
     ax.grid(axis="y", color=GRID, lw=.8, zorder=0); ax.set_axisbelow(True)
     for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
     fig.tight_layout()
-    fig.savefig("fig_overlap.png", dpi=300, facecolor="white")
-    print("wrote fig_overlap.png")
+    fig.savefig("figures/fig_overlap.png", dpi=300, facecolor="white")
+    print("wrote figures/fig_overlap.png")
 
 
 if __name__ == "__main__":

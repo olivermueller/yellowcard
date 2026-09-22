@@ -23,7 +23,7 @@ comparable unbooked players.
 - **Event and lineup data:** [StatsBomb open data](https://github.com/statsbomb/open-data)
   (fetched by notebook `01`).
 - **Betting odds:** [football-data.co.uk](https://www.football-data.co.uk)
-  (fetched by `src/build_odds.py` and `src/build_odds_european.py`).
+  (fetched by `src/build_odds.py`).
 - **Player dates of birth:** Wikidata (snapshot included as
   `data/player_dob.parquet`).
 
@@ -39,15 +39,15 @@ pip install -r requirements.txt
 
 Run the three notebooks in order:
 
-1. `01_fetch_statsbomb_events.ipynb` — download competitions, matches, lineups,
-   and events from the StatsBomb open data release.
+1. `01_fetch_statsbomb_events.ipynb` — download matches, lineups, and events
+   for the sample (men's matches of the five major European leagues) from the
+   StatsBomb open data release.
 2. `02_build_analysis_frame.ipynb` — construct the per-player-match analysis
    frame with the window structure (pre-window covariates, treatment window,
-   outcome windows).
+   outcome windows) and fetch the pre-match betting odds.
 3. `03_perform_analysis.ipynb` — runs the analysis scripts under `src/` in the
-   order in which their results appear in the paper (betting-odds construction
-   first, then every table and figure). The scripts are self-contained and can
-   also be run individually.
+   order in which their results appear in the paper (every table and figure).
+   The scripts are self-contained and can also be run individually.
 
 ## Mapping of paper exhibits to scripts
 
@@ -56,7 +56,7 @@ Run the three notebooks in order:
 | Table 1 (sample construction) | `build_attrition_table.py` |
 | Table 2 (variable families) | definitional, no script |
 | Table 3 (descriptives by treatment status) | `build_descriptives_table.py` |
-| Table 4 (main DML estimates) | `build_male_dml.py` |
+| Table 4 (main DML estimates) | `build_dml.py` |
 | Table 5 (CLAN response-quartile profiles) | `build_cate_profiles.py` |
 | Table 6 (teammate spillover) | `build_spillover_effect.py` |
 | Table 7 (spillover-free re-estimation) | `build_spillover_robustness.py` |
@@ -77,5 +77,5 @@ Run the three notebooks in order:
 | In-text: count bounds, primary window | `build_lee_conditional.py` |
 | In-text: seed spread, residual balance | `build_insensitivity.py` |
 
-`src/analysis_config.py` defines the confounder set W and the moderator set Z
-shared by all scripts.
+`src/build_dml.py` defines the sample loader, the confounder matrix W, and
+the DML machinery shared by all scripts.

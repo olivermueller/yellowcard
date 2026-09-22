@@ -5,7 +5,7 @@ significant heterogeneity): A position (5 groups), B half-time game
 state, C age (continuous), D pre-match win probability (continuous);
 C and D display the nulls visibly with pointwise 95% bands.
 
-Output: fig_hte_joint.png (300 dpi; also usable as a separate-file figure
+Output: figures/fig_hte_joint.png (300 dpi; also usable as a separate-file figure
 for JQAS after EPS/TIF conversion).
 """
 import warnings; warnings.filterwarnings("ignore")
@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import build_W, crossfit, load
+from build_dml import build_W, crossfit, load
 from build_hte_joint import z_design, POS_ORDER
 
 BLU, INK, GRID, MUT = "#2a78d6", "#1b2733", "#e3e8ee", "#9aa3ad"
@@ -31,10 +31,8 @@ def implied(zrow, b, V):
 
 
 def main():
+    Path("figures").mkdir(exist_ok=True)
     df = load()
-    if "competition_format" not in df.columns:
-        df["competition_format"] = (df["competition_type"] == "Domestic League").map(
-            {True: "league", False: "cup"})
     Z, pos5 = z_design(df)
     W = build_W(df)
     T_res, Y_res, _ = crossfit(df, W)
@@ -139,8 +137,8 @@ def main():
 
     fig.suptitle("")
     fig.tight_layout()
-    fig.savefig("fig_hte_joint.png", dpi=300, facecolor="white")
-    print("wrote fig_hte_joint.png")
+    fig.savefig("figures/fig_hte_joint.png", dpi=300, facecolor="white")
+    print("wrote figures/fig_hte_joint.png")
 
 
 if __name__ == "__main__":

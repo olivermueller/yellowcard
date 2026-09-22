@@ -18,7 +18,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor, HistGradientBoosting
 from sklearn.model_selection import GroupKFold, cross_val_predict
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import HGB, build_W, ate
+from build_dml import HGB, build_W, ate
 import build_multiwindow as mw
 
 WINDOWS = [50, 60, 70, 80, 90]

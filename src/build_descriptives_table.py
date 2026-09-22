@@ -14,7 +14,7 @@ import numpy as np, pandas as pd
 import statsmodels.api as sm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import DVS, load
+from build_dml import DVS, load
 
 OPP = ["pre_player_n_" + c for c in ["pressure", "tackle", "foul_committed"]]
 BALL = ["pre_player_n_" + c for c in ["ball_recovery", "clearance", "block", "interception"]]
@@ -52,11 +52,6 @@ def main():
     out.to_csv("data/descriptives_by_treatment.csv", index=False)
     pd.set_option("display.float_format", lambda v: f"{v:.3f}")
     print(out.to_string(index=False))
-    fb = out[out["var"].str.startswith("Fouls committed")].iloc[0]
-    db = out[out["var"].str.startswith("Defensive actions")].iloc[0]
-    print(f"\npre fouls: +{100*(fb.mean_booked/fb.mean_unbooked-1):.1f}% | "
-          f"pre def actions: +{100*(db.mean_booked/db.mean_unbooked-1):.1f}%")
-
 
 if __name__ == "__main__":
     main()

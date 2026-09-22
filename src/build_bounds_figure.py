@@ -2,9 +2,10 @@
 identification bounds across all outcome windows (count outcomes).
 
 Input: data/multiwindow_results.csv, data/lee_bounds_windows.csv.
-Output: fig_bounds.png (300 dpi).
+Output: figures/fig_bounds.png (300 dpi).
 """
 import warnings; warnings.filterwarnings("ignore")
+from pathlib import Path
 import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -17,6 +18,7 @@ def rel(v):
 
 
 def main():
+    Path("figures").mkdir(exist_ok=True)
     mw = pd.read_csv("data/multiwindow_results.csv")
     bd = pd.read_csv("data/lee_bounds_windows.csv")
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
@@ -47,8 +49,8 @@ def main():
     axes[0].set_ylabel("effect relative to control mean (%)")
     axes[0].legend(fontsize=8.5, frameon=False, loc="lower left")
     fig.tight_layout()
-    fig.savefig("fig_bounds.png", dpi=300, facecolor="white")
-    print("wrote fig_bounds.png")
+    fig.savefig("figures/fig_bounds.png", dpi=300, facecolor="white")
+    print("wrote figures/fig_bounds.png")
 
 
 if __name__ == "__main__":

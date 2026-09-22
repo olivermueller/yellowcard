@@ -1,21 +1,13 @@
 """Multi-window DML: outcomes for 45-50/60/70/80/90.
 
-Windows and samples (male, outfield starters, complete-case on age):
-  45-b  : treatment = first yellow [15,45]; outcome = counts in period 2,
-          45 <= minute <= b; eligible = started, no H1 exit, not subbed or
-          sent off at or before b. For b < 60 this ADDS players censored in
-          (b,60] who are missing from the paper frame — their per-player
-          pre-window counts are rebuilt from events (validated exact against
-          the frame) and team-level covariates are borrowed from a teammate's
-          frame row.
-  30-45 : treatment = first yellow [15,30]; outcome = counts in period 1,
-          minute >= 30 (incl. H1 stoppage); eligible = started, no H1 exit.
-          Players first-booked in [0,15) or (30,45] are dropped (ambiguous /
-          contaminated). Nearly censoring-free by construction.
+Per window 45-b (b in {50,60,70,80,90}): treatment = first yellow [15,45];
+outcome = counts in period 2, 45 <= minute <= b; eligible = started, no H1
+exit, not substituted or sent off at or before b. For b < 60 this ADDS
+players censored in (b,60] who are absent from the analysis frame — their
+per-player pre-window counts are rebuilt from events and team-level
+covariates are taken from a teammate's frame row.
 
-Estimation identical to build_male_dml.py (paper W + age, HGB nuisances,
-GroupKFold by match, cluster-robust SEs). Also reports the per-window
-censoring differential (position-adjusted) and Lee trimming fraction.
+Estimation identical to build_dml.py.
 
 Output: data/multiwindow_results.csv
 """
@@ -25,13 +17,12 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import DVS, CARD, HGB, build_W, crossfit, ate
+from build_dml import DVS, CARD, HGB, POSITION_GROUP, build_W, crossfit, ate
 
 OUT_TYPES = {"post_n_pressure": "pressure", "post_n_tackle": "tackle",
              "post_n_foul_committed": "foul_committed",
              "post_n_ball_recovery": "ball_recovery", "post_n_clearance": "clearance",
              "post_n_block": "block", "post_n_interception": "interception"}
-DEF_TYPES = OUT_TYPES
 # per-window outcome set mirrors the primary analysis exactly
 MW_DVS = dict(DVS)
 
@@ -43,15 +34,15 @@ def tname(t, dt):
 
 
 def load_all():
-    from build_male_dml import load as load_spec
-    df = load_spec()                      # male EU leagues, age+odds
+    from build_dml import load
+    df = load()
     mids = df.match_id.unique().tolist()
     ev = pd.read_parquet("data/events.parquet",
         columns=["match_id", "player_id", "team", "type", "duel_type", "period", "minute",
                  "position"] + CARD,
         filters=[("match_id", "in", mids)])
     ev["tn"] = [tname(t, d) for t, d in zip(ev.type, ev.duel_type)]
-    lu = pd.read_parquet("data/lineups_male.parquet")
+    lu = pd.read_parquet("data/lineups.parquet")
     return df, ev, lu[lu.match_id.isin(mids)]
 
 
@@ -105,12 +96,11 @@ def build_extras(cand, frame, ev, book):
     types = [c.replace("pre_player_n_", "") for c in pre_cols]
     pc = pre_counts(ev, set(types))
     # position group from first observed position; outfield only
-    posmap = frame.drop_duplicates("position").set_index("position").position_group.to_dict()
     pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
-             .groupby(["match_id", "player_id"]).position.first().map(posmap).rename("position_group"))
+             .groupby(["match_id", "player_id"]).position.first().map(POSITION_GROUP).rename("position_group"))
     # one team-level donor row per (match, team)
     team_cols = ([c for c in frame.columns if c.startswith("pre_diff_n_")]
-                 + ["pre_score_diff", "home_away", "competition_type", "match_date",
+                 + ["pre_score_diff", "home_away", "match_date",
                     "odds_p_home", "odds_p_draw"])
     donor = frame.drop_duplicates(["match_id", "team_id"])[["match_id", "team_id"] + team_cols]
 
@@ -121,7 +111,6 @@ def build_extras(cand, frame, ev, book):
     for t in types:
         X[f"pre_player_n_{t}"] = X[t].fillna(0) if t in X else 0.0
     X = X.drop(columns=[t for t in types if t in X.columns])   # raw type cols collide downstream
-    X["gender"] = "male"
     X["treat_yellow_card"] = 0  # set by caller from book_min
     bm = X.merge(book, on=["match_id", "player_id"], how="left").book_min
     X["book_min"] = bm.values
@@ -211,8 +200,8 @@ def main():
 
     res = pd.DataFrame(results)
     res.to_csv("data/multiwindow_results.csv", index=False)
-    print("\n=== summary (fouls + def_actions across windows) ===")
-    print(res[res.dv.isin(["fouls", "def_actions"])]
+    print("\n=== summary (fouls + opponent-directed across windows) ===")
+    print(res[res.dv.isin(["fouls", "opp_directed"])]
           .pivot(index="window", columns="dv", values=["ate", "p", "rel"]).to_string())
     print("\nwrote data/multiwindow_results.csv")
 

@@ -6,7 +6,7 @@ folded into the 40-45 and 85-90 brackets), with 95% confidence intervals
 for the bracket mean across the 2,440 matches. Panel colour marks
 the category (opponent-directed vs ball-directed).
 
-Output: fig_event_freq.png (300 dpi).
+Output: figures/fig_event_freq.png (300 dpi).
 """
 import warnings; warnings.filterwarnings("ignore")
 import sys
@@ -16,7 +16,7 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import load
+from build_dml import load
 from build_multiwindow import tname
 
 BLU, YEL, INK, GRID = "#2a78d6", "#eda100", "#1b2733", "#e3e8ee"
@@ -27,6 +27,7 @@ PANELS = [("pressure", "Pressures", BLU), ("tackle", "Tackles", BLU),
 
 
 def main():
+    Path("figures").mkdir(exist_ok=True)
     df = load()
     mids = df.match_id.unique()
     ev = pd.read_parquet("data/events.parquet",
@@ -64,8 +65,8 @@ def main():
         axes[i].set_xlabel("minute (5-minute brackets)")
     axes[6].tick_params(labelbottom=True)
     fig.tight_layout()
-    fig.savefig("fig_event_freq.png", dpi=300, facecolor="white")
-    print("wrote fig_event_freq.png")
+    fig.savefig("figures/fig_event_freq.png", dpi=300, facecolor="white")
+    print("wrote figures/fig_event_freq.png")
 
 
 if __name__ == "__main__":

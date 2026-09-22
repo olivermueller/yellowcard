@@ -15,7 +15,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor, HistGradientBoosting
 from sklearn.model_selection import GroupKFold, cross_val_predict
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import DVS, HGB, ate, build_W, load
+from build_dml import DVS, HGB, ate, build_W, load
 
 
 def main():

@@ -14,7 +14,7 @@ on the pitch at 60' among starters on the pitch at the end of H1
 Bounds: within each cell drop the top / bottom p(c) share of CONTROL
 outcomes (seeded tie-break), then re-run the full DML (nuisances refit).
 
-Output: data/male_dml_lee_conditional.csv.
+Output: data/lee_conditional_results.csv.
 """
 import warnings; warnings.filterwarnings("ignore")
 import sys
@@ -22,7 +22,7 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import DVS, CARD, load, build_W, crossfit, ate
+from build_dml import DVS, CARD, POSITION_GROUP, load, build_W, crossfit, ate
 
 N_ACT = 3   # activity terciles
 
@@ -30,13 +30,12 @@ N_ACT = 3   # activity terciles
 def censor_cells(df):
     """Per-cell survival-based trimming shares p(c)."""
     mids = df.match_id.unique().tolist()
-    posmap = df.drop_duplicates("position").set_index("position").position_group.to_dict()
     ev = pd.read_parquet("data/events.parquet",
         columns=["match_id", "player_id", "period", "minute", "type", "position"] + CARD,
         filters=[("match_id", "in", mids)])
     card = ev[CARD[0]].where(ev[CARD[0]].notna(), ev[CARD[1]])
     pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
-             .groupby(["match_id", "player_id"]).position.first().map(posmap).rename("grp"))
+             .groupby(["match_id", "player_id"]).position.first().map(POSITION_GROUP).rename("grp"))
     pre = (ev[(ev.period == 1) & (ev.minute < 15)].groupby(["match_id", "player_id"])
              .size().rename("pre_n"))
     sub = ev[(ev.type == "Substitution") & ev.period.le(2)]
@@ -49,7 +48,7 @@ def censor_cells(df):
     tk = set(zip(*y1.drop_duplicates(["match_id", "player_id"])[["match_id", "player_id"]].values.T))
     bk = set(zip(*ev[card.eq("Yellow Card") & (ev.period == 1)]
                  [["match_id", "player_id"]].drop_duplicates().values.T))
-    lu = pd.read_parquet("data/lineups_male.parquet")
+    lu = pd.read_parquet("data/lineups.parquet")
     E = lu[lu.started & lu.match_id.isin(mids)][["match_id", "player_id"]]
     E = E[[k not in h1_exit for k in zip(E.match_id, E.player_id)]].copy()
     E = (E.merge(exit2, on=["match_id", "player_id"], how="left")
@@ -90,7 +89,6 @@ def main():
     t = df.treat_yellow_card.astype(int).values
     T_res, Y_res, _ = crossfit(df, W)
 
-    uncond = pd.read_csv("data/male_dml_results.csv").set_index("dv")
     rng = np.random.default_rng(0)
     rows = []
     print("\n=== conditional Lee bounds ===")
@@ -116,13 +114,11 @@ def main():
         rows.append(dict(dv=lab, control_mean=round(cm, 3), ate=round(est, 4), p=round(p, 4),
                          cond_lo=round(bounds["lower"], 4), cond_hi=round(bounds["upper"], 4),
                          cond_lo_rel=f"{100*bounds['lower']/cm:+.1f}%",
-                         cond_hi_rel=f"{100*bounds['upper']/cm:+.1f}%",
-                         uncond_lo_rel=uncond.loc[lab, "lee_lo_rel"],
-                         uncond_hi_rel=uncond.loc[lab, "lee_hi_rel"]))
+                         cond_hi_rel=f"{100*bounds['upper']/cm:+.1f}%"))
         print(pd.DataFrame(rows).tail(1).to_string(index=False, header=(len(rows) == 1)), flush=True)
     out = pd.DataFrame(rows)
-    out.to_csv("data/male_dml_lee_conditional.csv", index=False)
-    print("\nwrote data/male_dml_lee_conditional.csv")
+    out.to_csv("data/lee_conditional_results.csv", index=False)
+    print("\nwrote data/lee_conditional_results.csv")
 
 
 if __name__ == "__main__":

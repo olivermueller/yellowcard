@@ -1,8 +1,8 @@
 """Sample-construction (attrition) table.
 
-Reproduces the sample construction step by step on the match
-universe (male, five European leagues, complete odds-era seasons) and
-prints the surviving player-match count after each criterion:
+Reproduces the sample construction step by step on the sample's match
+universe and prints the surviving player-match count after each
+criterion:
 
   1. players listed in the match lineups
   2. started the match (Starting XI)
@@ -13,7 +13,7 @@ prints the surviving player-match count after each criterion:
   6. at most one yellow card in the treatment window [15,45]
   7. age and betting odds available (complete case)
 
-The final row must equal the analysis sample of build_male_dml.load().
+The final row must equal the analysis sample of build_dml.load().
 Output: data/attrition_table.csv
 """
 import warnings; warnings.filterwarnings("ignore")
@@ -22,28 +22,23 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import CARD, EU_LEAGUES, load
+from build_dml import CARD, POSITION_GROUP, load
 
 
 def main():
     frame = pd.read_csv("data/analysis_frame.csv",
-                        usecols=["match_id", "player_id", "gender", "competition", "season",
-                                 "position", "position_group", "treat_yellow_card"],
-                        low_memory=False)
-    fr = frame[(frame.gender == "male") & frame.competition.isin(EU_LEAGUES)
-               & ~frame.season.isin(["1973/1974", "1986/1987"])]
-    mids = fr.match_id.unique().tolist()
+                        usecols=["match_id", "player_id", "position", "position_group",
+                                 "treat_yellow_card"], low_memory=False)
+    mids = frame.match_id.unique().tolist()
 
     ev = pd.read_parquet("data/events.parquet",
         columns=["match_id", "player_id", "period", "minute", "type", "position"] + CARD,
         filters=[("match_id", "in", mids)])
     card = ev[CARD[0]].where(ev[CARD[0]].notna(), ev[CARD[1]])
-    posmap = frame.drop_duplicates("position").set_index("position").position_group.to_dict()
-    posmap["Goalkeeper"] = "Goalkeeper"
     pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
-             .groupby(["match_id", "player_id"]).position.first().map(posmap).rename("grp"))
+             .groupby(["match_id", "player_id"]).position.first().map(POSITION_GROUP).rename("grp"))
 
-    lu = pd.read_parquet("data/lineups_male.parquet")
+    lu = pd.read_parquet("data/lineups.parquet")
     d = lu[lu.match_id.isin(mids)][["match_id", "player_id", "started"]].copy()
     rows = [("Players listed in match lineups", len(d))]
 
@@ -81,7 +76,7 @@ def main():
           f"{int(spec.treat_yellow_card.sum()):,} "
           f"({100*spec.treat_yellow_card.mean():.2f}%)")
     consistent = abs(rows[-2][1] - len(spec) - (rows[-2][1] - rows[-1][1])) == 0
-    print("reconciles with build_male_dml.load():", rows[-1][1] == len(spec))
+    print("reconciles with build_dml.load():", rows[-1][1] == len(spec))
     out.to_csv("data/attrition_table.csv", index=False)
     print("wrote data/attrition_table.csv")
 

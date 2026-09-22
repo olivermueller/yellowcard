@@ -1,6 +1,6 @@
-"""Section-6 robustness numbers for the defensive-actions aggregate.
+"""Overlap and unconfoundedness robustness numbers, opponent-directed aggregate.
 
-(1) Overlap/trimming ladder: primary def_actions ATE re-estimated after
+(1) Overlap/trimming ladder: primary opponent-directed ATE re-estimated after
     discarding observations with e(W) outside successively tighter bands.
 (2) Cinelli-Hazlett sensitivity: robustness value (estimate to zero) and
     RV for significance at the 5% level; benchmark = partial R2 of the
@@ -16,7 +16,7 @@ import numpy as np, pandas as pd
 import statsmodels.api as sm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_male_dml import ate, build_W, crossfit, load
+from build_dml import ate, build_W, crossfit, load
 
 DV = "post_n_opp_directed"
 
@@ -64,7 +64,7 @@ def main():
     W2 = W.loc[:, [c for c in W.columns if not c.startswith("position_group")]]
     from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
     from sklearn.model_selection import GroupKFold, cross_val_predict
-    from build_male_dml import HGB
+    from build_dml import HGB
     cv = GroupKFold(5)
     t = df.treat_yellow_card.astype(int).values
     e2 = cross_val_predict(HistGradientBoostingClassifier(**HGB), W2, t,

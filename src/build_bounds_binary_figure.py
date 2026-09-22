@@ -5,9 +5,10 @@ conditional Lee identification bounds (shaded band), and the 95%
 Imbens-Manski interval for the partially identified effect (whiskers).
 
 Input:  data/lee_bounds_binary_im.csv
-Output: fig_bounds_binary.png (300 dpi).
+Output: figures/fig_bounds_binary.png (300 dpi).
 """
 import warnings; warnings.filterwarnings("ignore")
+from pathlib import Path
 import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -20,6 +21,7 @@ PANELS = [("any_opp_directed", "Opponent-directed"), ("any_pressure", "Pressures
 
 
 def main():
+    Path("figures").mkdir(exist_ok=True)
     b = pd.read_csv("data/lee_bounds_binary_im.csv")
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
     xs = np.arange(len(wins))
@@ -44,8 +46,8 @@ def main():
     axes[0].set_ylabel("effect on probability (pp)")
     axes[0].legend(fontsize=8.5, frameon=False, loc="lower left")
     fig.tight_layout()
-    fig.savefig("fig_bounds_binary.png", dpi=300, facecolor="white")
-    print("wrote fig_bounds_binary.png")
+    fig.savefig("figures/fig_bounds_binary.png", dpi=300, facecolor="white")
+    print("wrote figures/fig_bounds_binary.png")
 
 
 if __name__ == "__main__":
