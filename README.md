@@ -37,14 +37,17 @@ result tables behind the paper's exhibits are included under `data/`.
 pip install -r requirements.txt
 ```
 
+Run the three notebooks in order:
+
 1. `01_fetch_statsbomb_events.ipynb` — download competitions, matches, lineups,
    and events from the StatsBomb open data release.
 2. `02_build_analysis_frame.ipynb` — construct the per-player-match analysis
    frame with the window structure (pre-window covariates, treatment window,
    outcome windows).
-3. `src/build_odds.py`, `src/build_odds_european.py` — download and join the
-   pre-match betting odds (de-vigged win/draw probabilities).
-4. Analysis scripts (`python src/<script>.py`, any order after 1–3).
+3. `03_perform_analysis.ipynb` — runs the analysis scripts under `src/` in the
+   order in which their results appear in the paper (betting-odds construction
+   first, then every table and figure). The scripts are self-contained and can
+   also be run individually.
 
 ## Mapping of paper exhibits to scripts
 
