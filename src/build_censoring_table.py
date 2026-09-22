@@ -69,10 +69,12 @@ def main():
         act = pd.qcut(D2.pre_n.rank(method="first"), 3, labels=["low", "mid", "high"]).astype(str)
         D["cell"] = D2.grp.fillna("Unknown").values + "|" + act.values
 
-    print(f"HT withdrawal: treated {100*(T.exit2==45).mean():.1f}% vs control {100*(C.exit2==45).mean():.2f}%")
-
     rows = []
     w = T.cell.value_counts(normalize=True)
+    ht_adj = sum(w.get(k, 0) * C.groupby("cell").exit2.apply(lambda s: (s == 45).mean()).get(k, np.nan)
+                 for k in w.index)
+    print(f"HT withdrawal: treated {100*(T.exit2==45).mean():.1f}% vs control "
+          f"{100*(C.exit2==45).mean():.2f}% (raw) / {100*ht_adj:.2f}% (cell-adjusted)")
     for c in WINDOWS:
         t_c = (T.exit2 <= c).mean()
         cell_rates = C.groupby("cell").exit2.apply(lambda s, cc=c: (s <= cc).mean())
