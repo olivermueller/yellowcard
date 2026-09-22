@@ -1,0 +1,13 @@
+dv,state,theta,se,p,control_mean,rel
+opp_directed,trailing,-0.1434,0.0936,0.1257,3.565,-4.0%
+opp_directed,level,-0.1195,0.0776,0.1239,3.451,-3.5%
+opp_directed,leading,-0.3348,0.0975,0.0006,3.442,-9.7%
+pressures,trailing,-0.1474,0.077,0.0555,2.955,-5.0%
+pressures,level,-0.0403,0.0657,0.5392,2.844,-1.4%
+pressures,leading,-0.218,0.0841,0.0096,2.834,-7.7%
+tackles,trailing,0.0035,0.0235,0.8812,0.35,+1.0%
+tackles,level,0.0055,0.0196,0.7804,0.34,+1.6%
+tackles,leading,-0.0096,0.0253,0.7049,0.353,-2.7%
+fouls,trailing,-0.0058,0.0198,0.7706,0.261,-2.2%
+fouls,level,-0.0819,0.0147,0.0,0.267,-30.7%
+fouls,leading,-0.0976,0.0182,0.0,0.255,-38.2%
