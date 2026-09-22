@@ -44,7 +44,8 @@ Run the three notebooks in order:
    StatsBomb open data release.
 2. `02_build_analysis_frame.ipynb` — construct the per-player-match analysis
    frame with the window structure (pre-window covariates, treatment window,
-   outcome windows) and fetch the pre-match betting odds.
+   outcome windows), fetch the pre-match betting odds, merge odds and player
+   age onto the frame, and restrict to the complete-case estimation sample.
 3. `03_perform_analysis.ipynb` — runs the analysis scripts under `src/` in the
    order in which their results appear in the paper (every table and figure).
    The scripts are self-contained and can also be run individually.

@@ -22,14 +22,11 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_dml import CARD, POSITION_GROUP, load
+from build_dml import CARD, POSITION_GROUP, load, sample_match_ids
 
 
 def main():
-    frame = pd.read_csv("data/analysis_frame.csv",
-                        usecols=["match_id", "player_id", "position", "position_group",
-                                 "treat_yellow_card"], low_memory=False)
-    mids = frame.match_id.unique().tolist()
+    mids = sample_match_ids()
 
     ev = pd.read_parquet("data/events.parquet",
         columns=["match_id", "player_id", "period", "minute", "type", "position"] + CARD,

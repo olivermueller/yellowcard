@@ -21,15 +21,14 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_dml import POSITION_GROUP
+from build_dml import POSITION_GROUP, sample_match_ids
 
 CARD = ["foul_committed_card", "bad_behaviour_card"]
 WINDOWS = [50, 60, 70, 80]
 
 
 def main():
-    af = pd.read_csv("data/analysis_frame.csv", usecols=["match_id"], low_memory=False)
-    mids = af.match_id.unique().tolist()
+    mids = sample_match_ids()
 
     ev = pd.read_parquet("data/events.parquet",
         columns=["match_id", "player_id", "period", "minute", "type", "position"] + CARD,

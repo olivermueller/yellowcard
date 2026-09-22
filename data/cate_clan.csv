@@ -1,15 +1,15 @@
 var,most_responsive,least_responsive,p
-Position: CentralDef,0.124,0.252,0.0
-Position: WideDef,0.009,0.371,0.0
-Position: DefMid,0.786,0.0,0.0
-Position: OffMid,0.026,0.112,0.0
-Position: Forward,0.055,0.265,0.0
-Game state: trailing,0.09,0.885,0.0
-Game state: level,0.496,0.115,0.0
-Game state: leading,0.414,0.0,0.0
-Age (years),27.612,26.786,0.0
-Pre-match win probability,0.345,0.305,0.0
-mean fitted CATE (Q1 most responsive),-0.1352,0.3206,
-relative to quartile control mean (Q1 most responsive),-42.2,,
-mean fitted CATE (Q4 least responsive),0.002,0.2324,
-relative to quartile control mean (Q4 least responsive),0.9,,
+Position: CentralDef,0.131,0.254,0.0
+Position: WideDef,0.008,0.362,0.0
+Position: DefMid,0.776,0.0,0.0
+Position: OffMid,0.044,0.111,0.0
+Position: Forward,0.042,0.273,0.0
+Game state: trailing,0.081,0.887,0.0
+Game state: level,0.502,0.113,0.0
+Game state: leading,0.417,0.0,0.0
+Age (years),27.627,26.779,0.0
+Pre-match win probability,0.346,0.308,0.0
+mean fitted CATE (Q1 most responsive),-0.1316,0.317,
+relative to quartile control mean (Q1 most responsive),-41.5,,
+mean fitted CATE (Q4 least responsive),0.0011,0.2327,
+relative to quartile control mean (Q4 least responsive),0.5,,

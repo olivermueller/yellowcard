@@ -1,11 +1,11 @@
 """Builds the pre-match betting-odds table for the analysis sample.
 
-Downloads football-data.co.uk odds for every league-season in the sample,
-maps team names, joins fixtures (with a +-3 day rescue for postponed
-matches), removes the bookmaker margin, and writes de-vigged home/draw
-probabilities per match.
+Downloads football-data.co.uk odds for every league-season in the sample
+(raw files are cached under data/odds/), maps team names, joins fixtures
+(with a +-3 day rescue for postponed matches), removes the bookmaker
+margin, and writes de-vigged home/draw probabilities per match.
 
-Output: data/odds/odds_european.csv
+Output: data/odds_european.csv
 """
 import warnings; warnings.filterwarnings("ignore")
 import time, urllib.request
@@ -90,23 +90,21 @@ def build_mapping(sb, fd):
 
 
 def main():
-    df = pd.read_csv("data/analysis_frame.csv", low_memory=False)
-    dob = pd.read_parquet("data/player_dob.parquet")[["player_id", "dob"]]
-    df = df.merge(dob, on="player_id", how="left")
-    df["age"] = (pd.to_datetime(df.match_date) - pd.to_datetime(df.dob)).dt.days / 365.25
-    df = df.dropna(subset=["age"]).reset_index(drop=True)
+    m = pd.read_parquet("data/matches.parquet")
+    m = m[(m["competition_gender"] == "male")
+          & m["competition_name"].isin(EU)
+          & ~m["season_name"].isin(["1973/1974", "1986/1987"])]
+    m = m[["match_id", "match_date", "home_team", "away_team",
+           "competition_name", "season_name"]].rename(
+        columns={"home_team": "home", "away_team": "away"}).copy()
+    m["match_date"] = m["match_date"].astype(str)
 
     pairs = sorted({(EU[c], season_code(s)) for c, s in
-                    df[["competition", "season"]].drop_duplicates().values})
-    print(f"sample: {len(df):,} rows, treated {int(df.treat_yellow_card.sum()):,} | "
-          f"{len(pairs)} league-season odds files")
+                    m[["competition_name", "season_name"]].drop_duplicates().values})
+    print(f"sample: {len(m):,} matches | {len(pairs)} league-season odds files")
     download(pairs)
     odds = load_odds(pairs)
 
-    m = df.drop_duplicates("match_id")[["match_id", "match_date", "team_name",
-                                        "opponent_name", "home_away"]].copy()
-    m["home"] = np.where(m.home_away == "home", m.team_name, m.opponent_name)
-    m["away"] = np.where(m.home_away == "home", m.opponent_name, m.team_name)
     mapping = build_mapping(sorted(set(m.home) | set(m.away)),
                             sorted(set(odds.HomeTeam) | set(odds.AwayTeam)))
     unmapped = [k for k, v in mapping.items() if v is None]
@@ -132,7 +130,7 @@ def main():
     tot = inv.sum(axis=1)
     j["odds_p_home"] = inv.h / tot; j["odds_p_draw"] = inv.d / tot
     j[["match_id", "odds_p_home", "odds_p_draw"]].to_csv(
-        "data/odds/odds_european.csv", index=False)
+        "data/odds_european.csv", index=False)
 
 
 if __name__ == "__main__":

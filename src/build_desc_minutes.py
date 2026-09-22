@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_dml import POSITION_GROUP
+from build_dml import POSITION_GROUP, sample_match_ids
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
@@ -42,8 +42,7 @@ def style(ax):
 
 def main():
     Path("figures").mkdir(exist_ok=True)
-    af = pd.read_csv("data/analysis_frame.csv", usecols=["match_id"], low_memory=False)
-    mids = af.match_id.unique().tolist()
+    mids = sample_match_ids()
 
     ev, card = load_events(mids)
     yel = ev[card.eq("Yellow Card") & ev.period.le(2)].copy()

@@ -1,7 +1,8 @@
 """Main DML estimates for the primary outcome window (manuscript Table 4).
 
-Sample: analysis frame restricted to the five European men's leagues,
-complete-case on age (Wikidata DOB) and betting odds.
+Sample: the analysis frame of 02_build_analysis_frame.ipynb — the five
+European men's leagues, complete-case on age (Wikidata DOB) and betting
+odds; the merge and the complete-case restriction happen in the notebook.
 W: pre-window player counts, team-vs-opponent count differences, score
 difference at minute 15, position and venue dummies, age, win and draw
 probability.
@@ -51,22 +52,29 @@ POSITION_GROUP = {
 }
 
 
+LEAGUES = ["Premier League", "La Liga", "1. Bundesliga", "Serie A", "Ligue 1"]
+
+
 def load():
-    """Analysis sample: the frame of 02_build_analysis_frame.ipynb with age
-    (Wikidata DOB) and betting odds merged, complete-case on both."""
+    """Analysis sample as written by 02_build_analysis_frame.ipynb: the
+    eligible frame with age (Wikidata DOB) and de-vigged betting odds
+    already merged, complete-case on both."""
     df = pd.read_csv("data/analysis_frame.csv", low_memory=False)
-    dob = pd.read_parquet("data/player_dob.parquet")[["player_id", "dob"]]
-    df = df.merge(dob, on="player_id", how="left")
-    df["age"] = (pd.to_datetime(df.match_date) - pd.to_datetime(df.dob)).dt.days / 365.25
-    odds = pd.read_csv("data/odds/odds_european.csv")
-    df = df.merge(odds, on="match_id", how="left")
-    n0 = len(df)
-    df = df.dropna(subset=["age", "odds_p_home"]).reset_index(drop=True)
-    df["odds_p_win"] = np.where(df.home_away == "home", df.odds_p_home,
-                                1 - df.odds_p_home - df.odds_p_draw)
-    print(f"analysis sample: {len(df):,} rows ({n0-len(df):,} dropped: missing age/odds) | "
+    print(f"analysis sample: {len(df):,} rows | "
           f"treated {int(df.treat_yellow_card.sum()):,}")
     return df
+
+
+def sample_match_ids():
+    """match_ids of the full sample (men's matches of the five major European
+    leagues, archival single-match seasons excluded) — the match universe of
+    02_build_analysis_frame.ipynb, before the complete-case restriction on
+    age and odds narrows the frame."""
+    m = pd.read_parquet("data/matches.parquet")
+    m = m[(m["competition_gender"] == "male")
+          & m["competition_name"].isin(LEAGUES)
+          & ~m["season_name"].isin(["1973/1974", "1986/1987"])]
+    return m["match_id"].tolist()
 
 
 def build_W(df):
