@@ -77,6 +77,7 @@ Run the three notebooks in order:
 | In-text: game-state effects, fitted-CATE quartiles | `build_hte_joint.py`, `build_cate_profiles.py` |
 | In-text: count bounds, primary window | `build_lee_conditional.py` |
 | In-text: seed spread, residual balance | `build_insensitivity.py` |
+| Cross-check vs. DoubleML / EconML (appendix) | `crosscheck_dml_plr.py`, `crosscheck_cate_linear.py` (needs `requirements_crosscheck.txt`) |
 
 `src/build_dml.py` defines the sample loader, the confounder matrix W, and
 the DML machinery shared by all scripts.
