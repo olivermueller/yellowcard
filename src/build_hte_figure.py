@@ -138,6 +138,7 @@ def main():
     fig.suptitle("")
     fig.tight_layout()
     fig.savefig("figures/fig_hte_joint.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_hte_joint.pdf", facecolor="white")
     print("wrote figures/fig_hte_joint.png")
 
 

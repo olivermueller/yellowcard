@@ -50,6 +50,7 @@ def main():
     axes[0].legend(fontsize=8.5, frameon=False, loc="lower left")
     fig.tight_layout()
     fig.savefig("figures/fig_bounds.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_bounds.pdf", facecolor="white")
     print("wrote figures/fig_bounds.png")
 
 

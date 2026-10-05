@@ -66,6 +66,7 @@ def main():
     axes[6].tick_params(labelbottom=True)
     fig.tight_layout()
     fig.savefig("figures/fig_event_freq.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_event_freq.pdf", facecolor="white")
     print("wrote figures/fig_event_freq.png")
 
 

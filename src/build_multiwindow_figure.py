@@ -62,6 +62,7 @@ def main():
                loc="upper center", bbox_to_anchor=(0.5, 0.995))
     fig.tight_layout(rect=(0, 0, 1, 0.975))
     fig.savefig("figures/fig_multiwindow.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_multiwindow.pdf", facecolor="white")
     print("wrote figures/fig_multiwindow.png")
 
 

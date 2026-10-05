@@ -40,6 +40,7 @@ def main():
     for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
     fig.tight_layout()
     fig.savefig("figures/fig_overlap.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_overlap.pdf", facecolor="white")
     print("wrote figures/fig_overlap.png")
 
 

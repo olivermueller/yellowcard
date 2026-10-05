@@ -61,6 +61,7 @@ def main():
     for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
     fig.tight_layout()
     fig.savefig("figures/fig_calibration.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_calibration.pdf", facecolor="white")
     print("\ncalibration by decile:")
     print(cal.round(4).to_string())
     print("\nwrote data/nuisance_metrics.csv, figures/fig_calibration.png")

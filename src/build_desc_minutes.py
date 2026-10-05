@@ -79,6 +79,7 @@ def main():
     ax.text(46, ax.get_ylim()[1]*.93, "HT", fontsize=8, color="#9aa3ad")
     fig.tight_layout()
     fig.savefig("figures/fig_timing_cards.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_timing_cards.pdf", facecolor="white")
 
     # --- substitutions: overall + per position group (2x2) ---
     fig, axes = plt.subplots(2, 2, figsize=(10, 6.4), sharex=True)
@@ -97,6 +98,7 @@ def main():
     for i in (2, 3): axes.ravel()[i].set_xlabel("minute")
     fig.tight_layout()
     fig.savefig("figures/fig_timing_subs.png", dpi=300, facecolor="white")
+    fig.savefig("figures/fig_timing_subs.pdf", facecolor="white")
     print("\nwrote figures/fig_timing_cards.png, figures/fig_timing_subs.png")
 
 
