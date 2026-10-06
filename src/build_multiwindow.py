@@ -48,7 +48,7 @@ def load_all():
 
 def exits(ev):
     card = ev[CARD[0]].where(ev[CARD[0]].notna(), ev[CARD[1]])
-    sub = ev[(ev.type == "Substitution") & ev.period.le(2)]
+    sub = ev[ev.type.isin(["Substitution", "Player Off"]) & ev.period.le(2)]
     red = ev[card.isin(["Second Yellow", "Red Card"]) & ev.period.le(2)]
     ex = pd.concat([sub, red])[["match_id", "player_id", "period", "minute"]]
     h1x = set(zip(*ex[ex.period == 1][["match_id", "player_id"]].values.T))
@@ -187,9 +187,11 @@ def main():
     results = []
     # ---- second-half windows ----
     for b in [50, 60, 70, 80, 90]:
-        elig = starters[starters.exit2 > b]
+        elig = starters[starters.exit2 >= b]
         f = frame.merge(elig[["match_id", "player_id"]], on=["match_id", "player_id"])
         cand = elig[~elig.in_frame][["match_id", "team_id", "player_id"]]
+        cand = cand.merge(book, on=["match_id", "player_id"], how="left")
+        cand = cand[~(cand.book_min < 15)][["match_id", "team_id", "player_id"]]
         extras = build_extras(cand, frame, ev, book)
         counts = window_counts(ev, 2, 45, None if b == 90 else b)   # 90 = full second half incl. stoppage
         d = assemble(f, extras, counts, 15, 45, book)

@@ -38,7 +38,7 @@ def censor_cells(df):
              .groupby(["match_id", "player_id"]).position.first().map(POSITION_GROUP).rename("grp"))
     pre = (ev[(ev.period == 1) & (ev.minute < 15)].groupby(["match_id", "player_id"])
              .size().rename("pre_n"))
-    sub = ev[(ev.type == "Substitution") & ev.period.le(2)]
+    sub = ev[ev.type.isin(["Substitution", "Player Off"]) & ev.period.le(2)]
     red = ev[card.isin(["Second Yellow", "Red Card"]) & ev.period.le(2)]
     ex = pd.concat([sub, red])[["match_id", "player_id", "period", "minute"]]
     h1_exit = set(zip(*ex[ex.period == 1][["match_id", "player_id"]].values.T))
@@ -63,8 +63,8 @@ def censor_cells(df):
     T, C = E[E.key.isin(tk)], E[~E.key.isin(bk)]
     ps = {}
     for c in sorted(E.cell.unique()):
-        qt = 1 - (T[T.cell == c].exit2 <= 60).mean()
-        qc = 1 - (C[C.cell == c].exit2 <= 60).mean()
+        qt = 1 - (T[T.cell == c].exit2 < 60).mean()
+        qc = 1 - (C[C.cell == c].exit2 < 60).mean()
         ps[c] = max(0.0, (qc - qt) / qc)
     return ps
 

@@ -80,9 +80,11 @@ def main():
 
     rows = []
     for b in WINDOWS:
-        elig = starters[starters.exit2 > b]
+        elig = starters[starters.exit2 >= b]
         f = frame.merge(elig[["match_id", "player_id"]], on=["match_id", "player_id"])
         cand = elig[~elig.in_frame][["match_id", "team_id", "player_id"]]
+        cand = cand.merge(book, on=["match_id", "player_id"], how="left")
+        cand = cand[~(cand.book_min < 15)][["match_id", "team_id", "player_id"]]
         extras = mw.build_extras(cand, frame, ev, book)
         counts = mw.window_counts(ev, 2, 45, None if b == 90 else b)
         d = mw.assemble(f, extras, counts, 15, 45, book)
@@ -92,8 +94,8 @@ def main():
 
         ps = {}
         for c in sorted(E.cell.unique()):
-            qt = 1 - (T_pop[T_pop.cell == c].exit2 <= b).mean()
-            qc = 1 - (C_pop[C_pop.cell == c].exit2 <= b).mean()
+            qt = 1 - (T_pop[T_pop.cell == c].exit2 < b).mean()
+            qc = 1 - (C_pop[C_pop.cell == c].exit2 < b).mean()
             ps[c] = max(0.0, (qc - qt) / qc)
         print(f"[45-{b}] n={len(d):,} treated={int(t.sum()):,} | trims "
               f"{100*min(ps.values()):.1f}-{100*max(ps.values()):.1f}%", flush=True)
