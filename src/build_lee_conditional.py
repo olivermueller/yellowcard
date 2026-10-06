@@ -73,7 +73,7 @@ def frame_cells(df):
     pre_cols = [c for c in df.columns if c.startswith("pre_player_n_")]
     tot = df[pre_cols].sum(axis=1)
     act = pd.qcut(tot.rank(method="first"), N_ACT, labels=range(N_ACT)).astype(int)
-    return (df.position_group.astype(str) + "|" + act.astype(str)).values
+    return (df.position.map(POS5).astype(str) + "|" + act.astype(str)).values
 
 
 def main():

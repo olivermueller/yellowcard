@@ -16,7 +16,7 @@ import numpy as np, pandas as pd
 import statsmodels.api as sm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_dml import ate, build_W, crossfit, load
+from build_dml import POS5, ate, build_W, crossfit, load
 
 DV = "post_n_opp_directed"
 
@@ -57,6 +57,13 @@ def main():
     f2q = (fq / np.sqrt(dof)) ** 2
     rv05 = 0.5 * (np.sqrt(f2q ** 2 + 4 * f2q) - f2q) if fq > 0 else 0.0
     print(f"\nCinelli-Hazlett: RV(estimate=0) {100*rv:.2f}% | RV(p=.05) {100*rv05:.2f}%")
+    # per-outcome RV for the second headline outcome
+    fit_f = sm.OLS(Y_res["post_n_foul_committed"], X).fit(cov_type="cluster",
+                                                          cov_kwds={"groups": groups})
+    f2f = (fit_f.params[1] / fit_f.bse[1] / np.sqrt(dof)) ** 2
+    rv_f = 0.5 * (np.sqrt(f2f ** 2 + 4 * f2f) - f2f)
+    print(f"Cinelli-Hazlett: RV(estimate=0, fouls) {100*rv_f:.2f}%")
+    rows.append(dict(check="CH", band="RV_zero_fouls", n=len(df), ate=round(100*rv_f, 2)))
 
     # benchmark: leave position out of W, refit nuisances, then partial R2 of
     # the position dummies with the leave-out residuals (Cinelli-Hazlett
@@ -72,7 +79,7 @@ def main():
     y = df[DV].values.astype(float)
     m2 = cross_val_predict(HistGradientBoostingRegressor(**HGB), W2, y,
                            cv=cv, groups=groups)
-    pos = pd.get_dummies(df.position_group, drop_first=True, dtype=float).values
+    pos = pd.get_dummies(df.position.map(POS5), drop_first=True, dtype=float).values
     r2y = sm.OLS(y - m2, sm.add_constant(pos)).fit().rsquared
     r2t = sm.OLS(t - e2, sm.add_constant(pos)).fit().rsquared
     print(f"benchmark (position): partial R2 outcome {100*r2y:.2f}% | treatment {100*r2t:.3f}%")
