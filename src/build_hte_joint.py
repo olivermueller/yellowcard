@@ -27,19 +27,8 @@ import numpy as np, pandas as pd
 import statsmodels.api as sm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_dml import DVS, build_W, crossfit, load
+from build_dml import DVS, POS5, build_W, crossfit, load
 
-POS5 = {
- "Center Back": "CentralDef", "Left Center Back": "CentralDef", "Right Center Back": "CentralDef",
- "Left Back": "WideDef", "Right Back": "WideDef", "Left Wing Back": "WideDef", "Right Wing Back": "WideDef",
- "Left Defensive Midfield": "DefMid", "Right Defensive Midfield": "DefMid",
- "Center Defensive Midfield": "DefMid", "Left Center Midfield": "DefMid",
- "Right Center Midfield": "DefMid", "Center Midfield": "DefMid",
- "Left Attacking Midfield": "OffMid", "Right Attacking Midfield": "OffMid",
- "Center Attacking Midfield": "OffMid", "Left Midfield": "OffMid", "Right Midfield": "OffMid",
- "Left Wing": "Forward", "Right Wing": "Forward", "Left Center Forward": "Forward",
- "Right Center Forward": "Forward", "Center Forward": "Forward", "Secondary Striker": "Forward",
-}
 POS_ORDER = ["CentralDef", "WideDef", "DefMid", "OffMid", "Forward"]   # base: CentralDef
 
 

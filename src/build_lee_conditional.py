@@ -22,7 +22,7 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_dml import DVS, CARD, POSITION_GROUP, load, build_W, crossfit, ate
+from build_dml import POS5, DVS, CARD, POSITION_GROUP, load, build_W, crossfit, ate
 
 N_ACT = 3   # activity terciles
 
@@ -35,7 +35,7 @@ def censor_cells(df):
         filters=[("match_id", "in", mids)])
     card = ev[CARD[0]].where(ev[CARD[0]].notna(), ev[CARD[1]])
     pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
-             .groupby(["match_id", "player_id"]).position.first().map(POSITION_GROUP).rename("grp"))
+             .groupby(["match_id", "player_id"]).position.first().map(POS5).rename("grp"))
     pre = (ev[(ev.period == 1) & (ev.minute < 15)].groupby(["match_id", "player_id"])
              .size().rename("pre_n"))
     sub = ev[ev.type.isin(["Substitution", "Player Off"]) & ev.period.le(2)]
@@ -56,7 +56,7 @@ def censor_cells(df):
            .merge(pre, on=["match_id", "player_id"], how="left"))
     E["exit2"] = E.exit2.fillna(999)
     E["pre_n"] = E.pre_n.fillna(0)
-    E = E[E.grp.isin(["Defender", "Midfielder", "Forward"])]
+    E = E[E.grp.isin(["CentralDef", "WideDef", "DefMid", "OffMid", "Forward"])]
     E["act"] = pd.qcut(E.pre_n.rank(method="first"), N_ACT, labels=range(N_ACT)).astype(int)
     E["cell"] = E.grp.astype(str) + "|" + E.act.astype(str)
     E["key"] = list(zip(E.match_id, E.player_id))

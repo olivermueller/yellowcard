@@ -96,8 +96,9 @@ def build_extras(cand, frame, ev, book):
     types = [c.replace("pre_player_n_", "") for c in pre_cols]
     pc = pre_counts(ev, set(types))
     # position group from first observed position; outfield only
-    pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
-             .groupby(["match_id", "player_id"]).position.first().map(POSITION_GROUP).rename("position_group"))
+    posraw = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
+                .groupby(["match_id", "player_id"]).position.first().rename("position"))
+    pos = pd.concat([posraw, posraw.map(POSITION_GROUP).rename("position_group")], axis=1)
     # one team-level donor row per (match, team)
     team_cols = ([c for c in frame.columns if c.startswith("pre_diff_n_")]
                  + ["pre_score_diff", "home_away", "match_date",

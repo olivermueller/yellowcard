@@ -21,7 +21,7 @@ from pathlib import Path
 import numpy as np, pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_dml import POSITION_GROUP, sample_match_ids
+from build_dml import POS5, POSITION_GROUP, sample_match_ids
 
 CARD = ["foul_committed_card", "bad_behaviour_card"]
 WINDOWS = [50, 60, 70, 80]
@@ -35,7 +35,7 @@ def main():
         filters=[("match_id", "in", mids)])
     card = ev[CARD[0]].where(ev[CARD[0]].notna(), ev[CARD[1]])
     pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
-             .groupby(["match_id", "player_id"]).position.first().map(POSITION_GROUP).rename("grp"))
+             .groupby(["match_id", "player_id"]).position.first().map(POS5).rename("grp"))
 
     sub = ev[(ev.type == "Substitution") & ev.period.le(2)]
     red = ev[card.isin(["Second Yellow", "Red Card"]) & ev.period.le(2)]

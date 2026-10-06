@@ -4,8 +4,8 @@ Sample: the analysis frame of 02_build_analysis_frame.ipynb — the five
 European men's leagues, complete-case on age (Wikidata DOB) and betting
 odds; the merge and the complete-case restriction happen in the notebook.
 W: pre-window player counts, team-vs-opponent count differences, score
-difference at minute 15, position and venue dummies, age, win and draw
-probability.
+difference at minute 15, five-group position and venue dummies, age,
+win and draw probability.
 Estimator: partial-linear DML with HistGradientBoosting nuisances
 (max_iter=400, lr=.05, min_samples_leaf=200, seed 0), 5-fold GroupKFold
 by match, cluster-robust SEs by match.
@@ -51,6 +51,21 @@ POSITION_GROUP = {
     "Secondary Striker": "Forward",
 }
 
+# Five-group tactical classification: the position covariate in W, the
+# moderator classification in Z, and the trimming-cell variable.
+POS5 = {
+    "Center Back": "CentralDef", "Left Center Back": "CentralDef", "Right Center Back": "CentralDef",
+    "Left Back": "WideDef", "Right Back": "WideDef", "Left Wing Back": "WideDef",
+    "Right Wing Back": "WideDef",
+    "Left Defensive Midfield": "DefMid", "Right Defensive Midfield": "DefMid",
+    "Center Defensive Midfield": "DefMid", "Left Center Midfield": "DefMid",
+    "Right Center Midfield": "DefMid", "Center Midfield": "DefMid",
+    "Left Attacking Midfield": "OffMid", "Right Attacking Midfield": "OffMid",
+    "Center Attacking Midfield": "OffMid", "Left Midfield": "OffMid", "Right Midfield": "OffMid",
+    "Left Wing": "Forward", "Right Wing": "Forward", "Left Center Forward": "Forward",
+    "Right Center Forward": "Forward", "Center Forward": "Forward", "Secondary Striker": "Forward",
+}
+
 
 LEAGUES = ["Premier League", "La Liga", "1. Bundesliga", "Serie A", "Ligue 1"]
 
@@ -86,7 +101,8 @@ def build_W(df):
            + sorted(c for c in df.columns if c.startswith("pre_diff_n_"))
            + ["pre_score_diff"]
            + [c for c in ["age", "odds_p_win", "odds_p_draw"] if c in df.columns])
-    catdum = pd.get_dummies(df[["position_group", "home_away"]], drop_first=True, dtype=float)
+    pos5 = df["position"].map(POS5).rename("position_group5")
+    catdum = pd.get_dummies(pd.concat([pos5, df["home_away"]], axis=1), drop_first=True, dtype=float)
     W = pd.concat([df[num].astype(float), catdum], axis=1)
     return W.loc[:, W.nunique() > 1]
 

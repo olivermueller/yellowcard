@@ -18,7 +18,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor, HistGradientBoosting
 from sklearn.model_selection import GroupKFold, cross_val_predict
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build_dml import HGB, build_W, ate
+from build_dml import POS5, HGB, build_W, ate
 import build_multiwindow as mw
 
 WINDOWS = [50, 60, 70, 80, 90]
@@ -60,7 +60,7 @@ def main():
 
     pos = (ev.dropna(subset=["position", "player_id"]).sort_values(["period", "minute"])
              .groupby(["match_id", "player_id"]).position.first()
-             .map(frame.drop_duplicates("position").set_index("position").position_group.to_dict())
+             .map(POS5)
              .rename("grp"))
     pre = (ev[(ev.period == 1) & (ev.minute < 15)].groupby(["match_id", "player_id"])
              .size().rename("pre_n"))
@@ -72,7 +72,7 @@ def main():
     E = (starters.merge(pos, on=["match_id", "player_id"], how="left")
                  .merge(pre, on=["match_id", "player_id"], how="left"))
     E["pre_n"] = E.pre_n.fillna(0)
-    E = E[E.grp.isin(["Defender", "Midfielder", "Forward"])]
+    E = E[E.grp.isin(["CentralDef", "WideDef", "DefMid", "OffMid", "Forward"])]
     E["act"] = pd.qcut(E.pre_n.rank(method="first"), N_ACT, labels=range(N_ACT)).astype(int)
     E["cell"] = E.grp.astype(str) + "|" + E.act.astype(str)
     E["key"] = list(zip(E.match_id, E.player_id))
@@ -102,7 +102,7 @@ def main():
 
         pre_cols = [c for c in d.columns if c.startswith("pre_player_n_")]
         act = pd.qcut(d[pre_cols].sum(axis=1).rank(method="first"), N_ACT, labels=range(N_ACT)).astype(int)
-        cells = (d.position_group.astype(str) + "|" + act.astype(str)).values
+        cells = (d.position.map(POS5).astype(str) + "|" + act.astype(str)).values
 
         W = build_W(d)
         T_res, Y_res = crossfit_bin(d, W, list(BDVS))
