@@ -1,13 +1,13 @@
 model,metric,value
-e(W) propensity,AUC,0.5625
-e(W) propensity,Brier,0.05702
+e(W) propensity,AUC,0.5706
+e(W) propensity,Brier,0.05699
 e(W) propensity,Brier (base rate),0.05718
-m(W) opp_directed,R2 (out-of-fold),0.1493
-m(W) pressures,R2 (out-of-fold),0.1697
-m(W) tackles,R2 (out-of-fold),0.0233
-m(W) fouls,R2 (out-of-fold),0.0108
-m(W) ball_directed,R2 (out-of-fold),0.0744
-m(W) ball_recoveries,R2 (out-of-fold),0.0298
-m(W) clearances,R2 (out-of-fold),0.1532
-m(W) blocks,R2 (out-of-fold),0.0085
-m(W) interceptions,R2 (out-of-fold),0.025
+m(W) opp_directed,R2 (out-of-fold),0.1571
+m(W) pressures,R2 (out-of-fold),0.1777
+m(W) tackles,R2 (out-of-fold),0.0276
+m(W) fouls,R2 (out-of-fold),0.0119
+m(W) ball_directed,R2 (out-of-fold),0.0793
+m(W) ball_recoveries,R2 (out-of-fold),0.0307
+m(W) clearances,R2 (out-of-fold),0.1734
+m(W) blocks,R2 (out-of-fold),0.0095
+m(W) interceptions,R2 (out-of-fold),0.0257
