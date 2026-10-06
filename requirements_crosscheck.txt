@@ -1,6 +1,5 @@
-# Optional: cross-check of the hand-rolled DML estimators against
-# canonical implementations (src/crosscheck_dml_plr.py,
-# src/crosscheck_cate_linear.py). Version-sensitive: DoubleML 0.7.x is
-# the release compatible with scikit-learn 1.3.
+# Optional: cross-checks of the hand-rolled DML estimators against the
+# DoubleML reference implementation (src/crosscheck_dml_plr.py,
+# src/crosscheck_irm.py, src/crosscheck_irm_cate.py). Version-sensitive:
+# DoubleML 0.7.x is the release compatible with scikit-learn 1.3.
 doubleml==0.7.1
-econml>=0.15
