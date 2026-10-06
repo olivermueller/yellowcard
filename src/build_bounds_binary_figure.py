@@ -14,10 +14,10 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 BLU, INK, GRID = "#2a78d6", "#1b2733", "#e3e8ee"
-# outcomes with significant average effects; bounds for the null outcomes
+# the opponent-directed outcomes; bounds for the ball-directed outcomes
 # remain in data/lee_bounds_binary_im.csv
 PANELS = [("any_opp_directed", "Opponent-directed"), ("any_pressure", "Pressures"),
-          ("any_foul", "Fouls")]
+          ("any_tackle", "Tackles"), ("any_foul", "Fouls")]
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     b = pd.read_csv("data/lee_bounds_binary_im.csv")
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
     xs = np.arange(len(wins))
-    fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.2), sharex=True)
+    fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.6), sharex=True)
     axes = axes.ravel()
     for ax, (dv, ttl) in zip(axes, PANELS):
         d = b[b.dv == dv].set_index("window").loc[wins]

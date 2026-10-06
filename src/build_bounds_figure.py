@@ -23,11 +23,12 @@ def main():
     bd = pd.read_csv("data/lee_bounds_windows.csv")
     wins = ["45-50", "45-60", "45-70", "45-80", "45-90"]
     xs = np.arange(len(wins))
-    # restricted to the outcomes with significant Section-5 effects;
-    # bounds for the null outcomes remain in data/lee_bounds_windows.csv
+    # the opponent-directed outcomes; bounds for the ball-directed
+    # outcomes remain in data/lee_bounds_windows.csv
     panels = [("opp_directed", "Opponent-directed (aggregate)"),
-              ("pressures", "Pressures"), ("fouls", "Fouls")]
-    fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.2), sharex=True)
+              ("pressures", "Pressures"), ("tackles", "Tackles"),
+              ("fouls", "Fouls")]
+    fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.6), sharex=True)
     axes = axes.ravel()
     for ax, (dv, ttl) in zip(axes, panels):
         m = mw[mw.dv == dv].set_index("window")
